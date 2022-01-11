@@ -1,4 +1,4 @@
-import { Arg, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Args, Mutation, Query, Resolver } from "type-graphql";
 import { hash, genSalt } from "bcrypt";
 
 // Schema
@@ -8,13 +8,46 @@ import UserSchema from "../shemas/user";
 import { UserModel, ISpUser } from "../models/user";
 
 // Types
-import { IError } from "src/types/shared";
+import { IError } from "../types/shared";
 
-@Resolver()
+// Server types
+import { UsersWhere } from "../serverTypes/user";
+
+@Resolver(UserSchema)
 export class UserResolver {
-  @Query(() => String)
-  hello(): String {
-    return "Hello";
+  @Query(() => [UserSchema])
+  async spUsersJson(): Promise<ISpUser[] | IError> {
+    try {
+      return await UserModel.find();
+    } catch (err) {
+      console.log(err);
+      return { message: err };
+    }
+  }
+
+  @Query(() => [UserSchema])
+  async spUsers(@Args() userWhere: UsersWhere): Promise<ISpUser[] | IError> {
+    try {
+      const filter: any = {};
+
+      if (userWhere.id) {
+        filter.id = userWhere.id;
+      }
+
+      if (userWhere.name) {
+        filter.name = { $regex: String(userWhere.name).toLowerCase(), $options: "i" };
+      }
+
+      if (userWhere.email) {
+        filter.email = { $regex: String(userWhere.email).toLowerCase(), $options: "i" };
+      }
+
+      const users: ISpUser[] = await UserModel.find(filter);
+      return users;
+    } catch (err) {
+      console.log(err);
+      return { message: err };
+    }
   }
 
   @Mutation(() => UserSchema)

@@ -8,7 +8,17 @@ type Mutation {
 }
 
 type Query {
-  hello: String!
+  spUsers(
+    """UTC format date"""
+    createdAt: String
+    email: String
+    id: String
+    name: String
+
+    """UTC format date"""
+    updatedAt: String
+  ): [User!]!
+  spUsersJson: [User!]!
 }
 
 """User Schema"""
