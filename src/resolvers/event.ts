@@ -4,10 +4,11 @@ import { Args, Mutation, Query, Resolver } from "type-graphql";
 import EventSchema from "../shemas/event";
 
 // Mongoose models
-import { EventModel, ISpEvent } from "../models/event";
+import { EventModel } from "../models/event";
 
 // Types
 import { IError } from "../types/shared";
+import { ISpEvent } from "src/types/entities/event";
 
 // Server types
 import { CreateEvent, EventsWhere } from "../serverTypes/event";
@@ -55,6 +56,10 @@ export class EventResolver {
 
       if (eventsWhere.isClosed) {
         filter.isClosed = eventsWhere.isClosed;
+      }
+
+      if (eventsWhere.participans) {
+        filter.participans = { id: { $in: eventsWhere.participans } };
       }
 
       const events: ISpEvent[] = await EventModel.find(filter);

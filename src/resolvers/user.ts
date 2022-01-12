@@ -5,10 +5,11 @@ import { hash, genSalt } from "bcrypt";
 import UserSchema from "../shemas/user";
 
 // Mongoose models
-import { UserModel, ISpUser } from "../models/user";
+import { UserModel } from "../models/user";
 
 // Types
 import { IError } from "../types/shared";
+import { ISpUser } from "src/types/entities/user";
 
 // Server types
 import { UsersWhere } from "../serverTypes/user";

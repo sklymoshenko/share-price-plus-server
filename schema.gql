@@ -3,18 +3,27 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
+"""
+The javascript `Date` as string. Type represents date and time as the ISO Date string.
+"""
+scalar DateTime
+
 """Event Schema"""
 type Event {
   _id: ID!
-  closedAt: String
-  createdAt: String!
+
+  """ISO date format"""
+  closedAt: DateTime
+  createdAt: DateTime!
   each: Float
   isClosed: Boolean
   name: String!
-  participans: Float
+  participans: [ID!]
   peopleCount: Float
   price: Float!
-  updatedAt: String
+
+  """ISO date format"""
+  updatedAt: DateTime
 }
 
 type Mutation {
@@ -29,25 +38,26 @@ type Query {
 
     """UTC format date"""
     createdAt: String
-    each: Float
+    each: Int
     id: String
     isClosed: Boolean
     name: String
-    peopleCount: Float
-    price: Float
+    participans: [ID!]
+    peopleCount: Int
+    price: Int
 
     """UTC format date"""
     updatedAt: String
   ): [Event!]!
   spEventsJson: [Event!]!
   spUsers(
-    """UTC format date"""
+    """ISO format date"""
     createdAt: String
     email: String
     id: String
     name: String
 
-    """UTC format date"""
+    """ISO format date"""
     updatedAt: String
   ): [User!]!
   spUsersJson: [User!]!
@@ -56,8 +66,14 @@ type Query {
 """User Schema"""
 type User {
   _id: ID!
+
+  """ISO date format"""
+  createdAt: DateTime!
   email: String!
   eventsCount: Float
   name: String!
   totallSpent: Float
+
+  """ISO date format"""
+  updatedAt: DateTime!
 }

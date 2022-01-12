@@ -1,4 +1,5 @@
-import { ArgsType, Field } from "type-graphql";
+import { ISpParticipant } from "src/types/entities/user";
+import { ArgsType, Field, ID, Int } from "type-graphql";
 
 export interface IEventsWhere {
   id?: string;
@@ -6,6 +7,7 @@ export interface IEventsWhere {
   price?: number;
   each?: number;
   peopleCount?: number;
+  participans?: ISpParticipant["_id"][];
   isClosed?: boolean;
   closedAt?: string;
   createdAt?: string;
@@ -20,14 +22,17 @@ export class EventsWhere implements IEventsWhere {
   @Field({ nullable: true })
   name?: string;
 
-  @Field({ nullable: true })
+  @Field(() => Int, { nullable: true })
   price?: number;
 
-  @Field({ nullable: true })
+  @Field(() => Int, { nullable: true })
   each?: number;
 
-  @Field({ nullable: true })
+  @Field(() => Int, { nullable: true })
   peopleCount?: number;
+
+  @Field(() => [ID], { nullable: true })
+  participans?: ISpParticipant["_id"][];
 
   @Field({ nullable: true })
   isClosed?: boolean;

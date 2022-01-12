@@ -1,18 +1,5 @@
 import * as Mongoose from "mongoose";
-import { ISpUser } from "./user";
-
-export interface ISpEvent extends Mongoose.Document {
-  _id: Mongoose.ObjectId;
-  name: string;
-  price: number;
-  each: number;
-  peopleCount: number;
-  participants: ISpUser[];
-  isClosed: boolean;
-  closedAt?: string;
-  createdAt?: string;
-  updatedAt?: string;
-}
+import { ISpEvent } from "src/types/entities/event";
 
 const EventSchema: Mongoose.Schema = new Mongoose.Schema(
   {
@@ -35,8 +22,7 @@ const EventSchema: Mongoose.Schema = new Mongoose.Schema(
     },
     participants: [
       {
-        type: Mongoose.Schema.Types.ObjectId,
-        ref: "SpUser"
+        type: Array
       }
     ]
   },

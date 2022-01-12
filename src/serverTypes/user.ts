@@ -19,9 +19,9 @@ export class UsersWhere implements IUsersWhere {
   @Field({ nullable: true })
   email?: string;
 
-  @Field({ description: "UTC format date", nullable: true })
+  @Field({ description: "ISO format date", nullable: true })
   createdAt?: string;
 
-  @Field({ description: "UTC format date", nullable: true })
+  @Field({ description: "ISO format date", nullable: true })
   updatedAt?: string;
 }

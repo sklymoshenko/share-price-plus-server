@@ -21,4 +21,10 @@ export default class User {
 
   @Field({ nullable: true })
   totallSpent: Number;
+
+  @Field({ description: "ISO date format" })
+  createdAt: Date;
+
+  @Field({ description: "ISO date format" })
+  updatedAt: Date;
 }

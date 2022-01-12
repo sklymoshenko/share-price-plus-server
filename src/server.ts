@@ -15,7 +15,8 @@ async function startServer() {
 
     const schema = await buildSchema({
       resolvers: [UserResolver, EventResolver],
-      emitSchemaFile: true
+      emitSchemaFile: true,
+      dateScalarMode: "isoDate"
     });
 
     const MONGO_USER = process.env.MONGO_USER;
