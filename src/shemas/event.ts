@@ -11,24 +11,24 @@ export default class Event {
   @Field()
   price: number;
 
-  @Field({ nullable: true })
+  @Field({ defaultValue: 0 })
   each?: number;
 
-  @Field({ nullable: true })
+  @Field({ defaultValue: 0 })
   peopleCount: number;
 
   @Field({ nullable: true })
   participans: number;
 
-  @Field({ nullable: true })
+  @Field({ defaultValue: false })
   isClosed: boolean;
 
   @Field({ nullable: true })
-  closedAt: number;
+  closedAt: string;
+
+  @Field()
+  createdAt: string;
 
   @Field({ nullable: true })
-  createdAt: number;
-
-  @Field({ nullable: true })
-  updatedAt: boolean;
+  updatedAt: string;
 }

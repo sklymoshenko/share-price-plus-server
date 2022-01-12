@@ -3,11 +3,43 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
+"""Event Schema"""
+type Event {
+  _id: ID!
+  closedAt: String
+  createdAt: String!
+  each: Float
+  isClosed: Boolean
+  name: String!
+  participans: Float
+  peopleCount: Float
+  price: Float!
+  updatedAt: String
+}
+
 type Mutation {
+  createEvent(name: String, peopleCount: Float, price: Float): Event!
   register(email: String!, name: String!, password: String!): User!
 }
 
 type Query {
+  spEvents(
+    """UTC format date"""
+    closedAt: String
+
+    """UTC format date"""
+    createdAt: String
+    each: Float
+    id: String
+    isClosed: Boolean
+    name: String
+    peopleCount: Float
+    price: Float
+
+    """UTC format date"""
+    updatedAt: String
+  ): [Event!]!
+  spEventsJson: [Event!]!
   spUsers(
     """UTC format date"""
     createdAt: String

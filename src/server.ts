@@ -7,13 +7,14 @@ import { config } from "dotenv";
 
 // Resolvers
 import { UserResolver } from "./resolvers/user";
+import { EventResolver } from "./resolvers/event";
 
 async function startServer() {
   try {
     config();
 
     const schema = await buildSchema({
-      resolvers: [UserResolver],
+      resolvers: [UserResolver, EventResolver],
       emitSchemaFile: true
     });
 

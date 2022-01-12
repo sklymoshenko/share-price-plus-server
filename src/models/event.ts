@@ -2,7 +2,7 @@ import * as Mongoose from "mongoose";
 import { ISpUser } from "./user";
 
 export interface ISpEvent extends Mongoose.Document {
-  id: Mongoose.ObjectId;
+  _id: Mongoose.ObjectId;
   name: string;
   price: number;
   each: number;
