@@ -1,35 +1,10 @@
-import { ISpLoaner, ISpParticipant } from "src/types/entities/user";
-import { Field, ObjectType, ID, InterfaceType, Int } from "type-graphql";
+import { Field, ObjectType, ID } from "type-graphql";
 
-@InterfaceType({ description: "Schema for participant loaner" })
-abstract class SpLoaner implements ISpLoaner {
-  @Field(() => ID)
-  id: string;
+// Types
+import { ISpParticipant } from "src/types/entities/user";
 
-  @Field(() => Int)
-  paid: number;
-}
-
-@InterfaceType({ description: "Schema for event participant " })
-abstract class SpParticipant implements ISpParticipant {
-  @Field(() => ID)
-  id: string;
-
-  @Field()
-  name: string;
-
-  @Field(() => Int, { defaultValue: 0 })
-  paid: number;
-
-  @Field(() => Int, { defaultValue: 0 })
-  ows: number;
-
-  @Field(() => Int, { defaultValue: 0 })
-  exceed: number;
-
-  @Field(() => [SpLoaner], { defaultValue: [] })
-  loaners: ISpLoaner[];
-}
+// Abstract classes
+import { SpParticipant } from "src/serverTypes/event";
 
 @ObjectType({ description: "Event Schema" })
 export default class Event {

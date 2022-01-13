@@ -12,6 +12,7 @@ import { ISpEvent } from "src/types/entities/event";
 
 // Server types
 import { CreateEvent, EventsWhere } from "../serverTypes/event";
+import { UserModel } from "src/models/user";
 
 @Resolver(EventSchema)
 export class EventResolver {
@@ -73,12 +74,19 @@ export class EventResolver {
   @Mutation(() => EventSchema)
   async createEvent(@Args() eventCreate: CreateEvent): Promise<ISpEvent | IError> {
     try {
-      const { name, price, peopleCount } = eventCreate;
+      const { name, price, peopleCount, participants } = eventCreate;
       const event = new EventModel({
         name,
         price,
-        peopleCount
+        peopleCount,
+        participants
       });
+
+      const participantsIds = participants.map((p) => p.id);
+
+      for (const participId of participantsIds) {
+        await UserModel.updateOne({ _id: participId }, { $push: { events: event._id } });
+      }
 
       await event.save();
 

@@ -1,5 +1,35 @@
-import { ISpParticipant } from "src/types/entities/user";
-import { ArgsType, Field, ID, Int } from "type-graphql";
+import { ISpLoaner, ISpParticipant } from "src/types/entities/user";
+import { ArgsType, Field, ID, Int, InterfaceType } from "type-graphql";
+
+@InterfaceType({ description: "Schema for participant loaner" })
+export abstract class SpLoaner implements ISpLoaner {
+  @Field(() => ID)
+  id: string;
+
+  @Field(() => Int)
+  paid: number;
+}
+
+@InterfaceType({ description: "Schema for event participant " })
+export abstract class SpParticipant implements ISpParticipant {
+  @Field(() => ID)
+  id: string;
+
+  @Field()
+  name: string;
+
+  @Field(() => Int, { defaultValue: 0 })
+  paid: number;
+
+  @Field(() => Int, { defaultValue: 0 })
+  ows: number;
+
+  @Field(() => Int, { defaultValue: 0 })
+  exceed: number;
+
+  @Field(() => [SpLoaner], { defaultValue: [] })
+  loaners: ISpLoaner[];
+}
 
 export interface IEventsWhere {
   id?: string;
@@ -50,11 +80,14 @@ export class EventsWhere implements IEventsWhere {
 @ArgsType()
 export class CreateEvent implements IEventsWhere {
   @Field({ nullable: true })
-  name?: string;
+  name: string;
 
   @Field({ nullable: true })
-  price?: number;
+  price: number;
 
   @Field({ nullable: true })
   peopleCount?: number;
+
+  @Field(() => [SpParticipant])
+  participants: ISpParticipant[];
 }
