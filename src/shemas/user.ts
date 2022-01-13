@@ -1,30 +1,36 @@
-import { Field, ObjectType, ID } from "type-graphql";
+import { Field, ObjectType, ID, Int, Root } from "type-graphql";
 import { IsEmail } from "class-validator";
+
+// Types
+import { ISpEvent } from "src/types/entities/event";
+import { ISpUser } from "src/types/entities/user";
 
 @ObjectType({ description: "User Schema" })
 export default class User {
   @Field(() => ID)
-  _id: String;
+  id: string;
 
   @Field()
-  name: String;
+  name: string;
 
   @Field()
   @IsEmail()
-  email: String;
+  email: string;
 
   // Wont be in schema
-  password: String;
+  password: string;
 
-  @Field({ nullable: true })
-  eventsCount: Number;
-
-  @Field({ nullable: true })
-  totallSpent: Number;
+  @Field(() => Int, { defaultValue: 0 })
+  eventsCount(@Root() user: ISpUser): number {
+    return user.events.length || 0;
+  }
 
   @Field({ description: "ISO date format" })
   createdAt: Date;
 
   @Field({ description: "ISO date format" })
   updatedAt: Date;
+
+  @Field(() => [ID])
+  events: ISpEvent["id"][];
 }

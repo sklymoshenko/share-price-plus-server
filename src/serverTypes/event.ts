@@ -1,33 +1,54 @@
+import { ISpEvent } from "src/types/entities/event";
 import { ISpLoaner, ISpParticipant } from "src/types/entities/user";
-import { ArgsType, Field, ID, Int, InterfaceType } from "type-graphql";
+import { ArgsType, Field, ID, InputType, Int, InterfaceType, ObjectType } from "type-graphql";
 
 @InterfaceType({ description: "Schema for participant loaner" })
-export abstract class SpLoaner implements ISpLoaner {
-  @Field(() => ID)
-  id: string;
-
-  @Field(() => Int)
-  paid: number;
-}
-
-@InterfaceType({ description: "Schema for event participant " })
-export abstract class SpParticipant implements ISpParticipant {
+export abstract class AbstractSpLoaner implements ISpLoaner {
   @Field(() => ID)
   id: string;
 
   @Field()
   name: string;
 
-  @Field(() => Int, { defaultValue: 0 })
+  @Field(() => Int)
+  paid: number;
+}
+
+@ObjectType({ implements: AbstractSpLoaner })
+class SpLoaner implements AbstractSpLoaner {
+  id: string;
+  name: string;
+  paid: number;
+}
+
+@InterfaceType({ description: "Schema for event participant " })
+export abstract class AbstractSpParticipant implements ISpParticipant {
+  @Field(() => ID)
+  id: string;
+
+  @Field()
+  name: string;
+
+  @Field(() => Int)
   paid: number;
 
-  @Field(() => Int, { defaultValue: 0 })
+  @Field(() => Int)
   ows: number;
 
-  @Field(() => Int, { defaultValue: 0 })
+  @Field(() => Int)
   exceed: number;
 
   @Field(() => [SpLoaner], { defaultValue: [] })
+  loaners: ISpLoaner[];
+}
+
+@ObjectType({ implements: AbstractSpParticipant })
+export class SpParticipant implements AbstractSpParticipant {
+  id: string;
+  name: string;
+  paid: number;
+  ows: number;
+  exceed: number;
   loaners: ISpLoaner[];
 }
 
@@ -77,17 +98,47 @@ export class EventsWhere implements IEventsWhere {
   updatedAt?: string;
 }
 
-@ArgsType()
-export class CreateEvent implements IEventsWhere {
+@InputType()
+class CreateSpLoaner implements Partial<AbstractSpLoaner> {
+  @Field(() => ID)
+  id: string;
+
+  @Field()
+  name: string;
+
+  @Field(() => Int, { defaultValue: 0 })
+  paid: number;
+}
+
+@InputType()
+class CreateSpParticipant implements Partial<AbstractSpParticipant> {
+  @Field(() => ID)
+  id: string;
+
+  @Field()
+  name: string;
+
+  @Field(() => Int, { defaultValue: 0 })
+  ows: number;
+
+  @Field(() => Int, { defaultValue: 0 })
+  paid: number;
+
+  @Field(() => Int, { defaultValue: 0 })
+  exceed: number;
+
+  @Field(() => [CreateSpLoaner], { defaultValue: [] })
+  loaners: ISpLoaner[];
+}
+
+@InputType()
+export class CreateEvent implements Partial<ISpEvent> {
   @Field({ nullable: true })
   name: string;
 
   @Field({ nullable: true })
   price: number;
 
-  @Field({ nullable: true })
-  peopleCount?: number;
-
-  @Field(() => [ID])
-  participants: ISpParticipant["id"][];
+  @Field(() => [CreateSpParticipant], { defaultValue: [] })
+  participants: ISpParticipant[];
 }

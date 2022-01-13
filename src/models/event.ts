@@ -20,11 +20,10 @@ const EventSchema: Mongoose.Schema = new Mongoose.Schema(
       type: Number,
       default: 0
     },
-    participants: [
-      {
-        type: Array
-      }
-    ]
+    participants: {
+      type: Array,
+      default: []
+    }
   },
   { timestamps: true }
 );

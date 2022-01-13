@@ -3,6 +3,44 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
+"""Schema for participant loaner"""
+interface AbstractSpLoaner {
+  id: ID!
+  name: String!
+  paid: Int!
+}
+
+"""Schema for event participant """
+interface AbstractSpParticipant {
+  exceed: Int!
+  id: ID!
+  loaners: [SpLoaner!]
+  name: String!
+  ows: Int!
+  paid: Int!
+}
+
+input CreateEvent {
+  name: String
+  participants: [CreateSpParticipant!] = []
+  price: Float
+}
+
+input CreateSpLoaner {
+  id: ID!
+  name: String!
+  paid: Int = 0
+}
+
+input CreateSpParticipant {
+  exceed: Int = 0
+  id: ID!
+  loaners: [CreateSpLoaner!] = []
+  name: String!
+  ows: Int = 0
+  paid: Int = 0
+}
+
 """
 The javascript `Date` as string. Type represents date and time as the ISO Date string.
 """
@@ -15,19 +53,19 @@ type Event {
   """ISO date format"""
   closedAt: DateTime
   createdAt: DateTime!
-  each: Float
+  each: Float!
   isClosed: Boolean
   name: String!
-  participans: [SpParticipant!]
-  peopleCount: Float
-  price: Float
+  participants: [SpParticipant!]
+  peopleCount: Float!
+  price: Float!
 
   """ISO date format"""
   updatedAt: DateTime
 }
 
 type Mutation {
-  createEvent(name: String, participants: [ID!]!, peopleCount: Float, price: Float): Event!
+  createEvent(data: CreateEvent!): Event!
   register(email: String!, name: String!, password: String!): User!
 }
 
@@ -63,32 +101,30 @@ type Query {
   spUsersJson: [User!]!
 }
 
-"""Schema for participant loaner"""
-interface SpLoaner {
+type SpLoaner implements AbstractSpLoaner {
   id: ID!
+  name: String!
   paid: Int!
 }
 
-"""Schema for event participant """
-interface SpParticipant {
-  exceed: Int
+type SpParticipant implements AbstractSpParticipant {
+  exceed: Int!
   id: ID!
   loaners: [SpLoaner!]
   name: String!
-  ows: Int
-  paid: Int
+  ows: Int!
+  paid: Int!
 }
 
 """User Schema"""
 type User {
-  _id: ID!
-
   """ISO date format"""
   createdAt: DateTime!
   email: String!
-  eventsCount: Float
+  events: [ID!]!
+  eventsCount: Int
+  id: ID!
   name: String!
-  totallSpent: Float
 
   """ISO date format"""
   updatedAt: DateTime!

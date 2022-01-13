@@ -1,4 +1,4 @@
-import { Args, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Args, Mutation, Query, Resolver } from "type-graphql";
 
 // Schema
 import EventSchema from "../shemas/event";
@@ -32,15 +32,11 @@ export class EventResolver {
       const filter: any = {};
 
       if (eventsWhere.id) {
-        filter.id = eventsWhere.id;
+        filter._id = eventsWhere.id;
       }
 
       if (eventsWhere.name) {
         filter.name = { $regex: String(eventsWhere.name).toLowerCase(), $options: "i" };
-      }
-
-      if (eventsWhere.price) {
-        filter.price = eventsWhere.price;
       }
 
       if (eventsWhere.price) {
@@ -72,18 +68,17 @@ export class EventResolver {
   }
 
   @Mutation(() => EventSchema)
-  async createEvent(@Args() eventCreate: CreateEvent): Promise<ISpEvent | IError> {
+  async createEvent(@Arg("data") eventCreate: CreateEvent): Promise<ISpEvent | IError> {
     try {
-      const { name, price, peopleCount, participants } = eventCreate;
+      const { name, price, participants } = eventCreate;
       const event = new EventModel({
         name,
         price,
-        peopleCount,
         participants
       });
 
       for (const participant of participants) {
-        await UserModel.updateOne({ _id: participant }, { $push: { events: event._id } });
+        await UserModel.updateOne({ id: participant.id }, { $push: { events: event._id } });
       }
 
       await event.save();

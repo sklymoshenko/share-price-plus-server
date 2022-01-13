@@ -1,10 +1,11 @@
-import { Field, ObjectType, ID } from "type-graphql";
+import { Field, ObjectType, ID, Root } from "type-graphql";
 
 // Types
 import { ISpParticipant } from "src/types/entities/user";
 
 // Abstract classes
 import { SpParticipant } from "../serverTypes/event";
+import { ISpEvent } from "src/types/entities/event";
 
 @ObjectType({ description: "Event Schema" })
 export default class Event {
@@ -14,17 +15,21 @@ export default class Event {
   @Field()
   name: String;
 
-  @Field({ defaultValue: 0 })
+  @Field()
   price: number;
 
-  @Field({ defaultValue: 0 })
-  each?: number;
+  @Field()
+  each(@Root() event: ISpEvent): number {
+    return Math.floor(event.price / event.participants.length);
+  }
 
-  @Field({ defaultValue: 0 })
-  peopleCount: number;
+  @Field()
+  peopleCount(@Root() event: ISpEvent): number {
+    return event.participants.length;
+  }
 
   @Field(() => [SpParticipant], { defaultValue: [] })
-  participans: ISpParticipant[];
+  participants: ISpParticipant[];
 
   @Field({ defaultValue: false })
   isClosed: boolean;
