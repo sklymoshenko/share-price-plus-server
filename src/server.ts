@@ -7,14 +7,16 @@ import { config } from "dotenv";
 
 // Resolvers
 import { UserResolver } from "./resolvers/user";
+import { EventResolver } from "./resolvers/event";
 
 async function startServer() {
   try {
     config();
 
     const schema = await buildSchema({
-      resolvers: [UserResolver],
-      emitSchemaFile: true
+      resolvers: [UserResolver, EventResolver],
+      emitSchemaFile: true,
+      dateScalarMode: "isoDate"
     });
 
     const MONGO_USER = process.env.MONGO_USER;

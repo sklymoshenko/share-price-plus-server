@@ -3,19 +3,129 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
+"""Schema for participant loaner"""
+interface AbstractSpLoaner {
+  id: ID!
+  name: String!
+  paid: Int!
+}
+
+"""Schema for event participant """
+interface AbstractSpParticipant {
+  exceed: Int!
+  id: ID!
+  loaners: [SpLoaner!]
+  name: String!
+  ows: Int!
+  paid: Int!
+}
+
+input CreateEvent {
+  name: String
+  participants: [CreateSpParticipant!] = []
+  price: Float
+}
+
+input CreateSpLoaner {
+  id: ID!
+  name: String!
+  paid: Int = 0
+}
+
+input CreateSpParticipant {
+  exceed: Int = 0
+  id: ID!
+  loaners: [CreateSpLoaner!] = []
+  name: String!
+  ows: Int = 0
+  paid: Int = 0
+}
+
+"""
+The javascript `Date` as string. Type represents date and time as the ISO Date string.
+"""
+scalar DateTime
+
+"""Event Schema"""
+type Event {
+  _id: ID!
+
+  """ISO date format"""
+  closedAt: DateTime
+  createdAt: DateTime!
+  each: Float!
+  isClosed: Boolean
+  name: String!
+  participants: [SpParticipant!]
+  peopleCount: Float!
+  price: Float!
+
+  """ISO date format"""
+  updatedAt: DateTime
+}
+
 type Mutation {
+  createEvent(data: CreateEvent!): Event!
   register(email: String!, name: String!, password: String!): User!
 }
 
 type Query {
-  hello: String!
+  spEvents(
+    """UTC format date"""
+    closedAt: String
+
+    """UTC format date"""
+    createdAt: String
+    each: Int
+    id: String
+    isClosed: Boolean
+    name: String
+    participants: [ID!]
+    peopleCount: Int
+    price: Int
+
+    """UTC format date"""
+    updatedAt: String
+  ): [Event!]!
+  spEventsJson: [Event!]!
+  spUsers(
+    """ISO format date"""
+    createdAt: String
+    email: String
+    id: String
+    name: String
+
+    """ISO format date"""
+    updatedAt: String
+  ): [User!]!
+  spUsersJson: [User!]!
+}
+
+type SpLoaner implements AbstractSpLoaner {
+  id: ID!
+  name: String!
+  paid: Int!
+}
+
+type SpParticipant implements AbstractSpParticipant {
+  exceed: Int!
+  id: ID!
+  loaners: [SpLoaner!]
+  name: String!
+  ows: Int!
+  paid: Int!
 }
 
 """User Schema"""
 type User {
-  _id: ID!
+  """ISO date format"""
+  createdAt: DateTime!
   email: String!
-  eventsCount: Float
+  events: [ID!]!
+  eventsCount: Int
+  id: ID!
   name: String!
-  totallSpent: Float
+
+  """ISO date format"""
+  updatedAt: DateTime!
 }

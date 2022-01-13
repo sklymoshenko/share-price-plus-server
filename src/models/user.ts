@@ -1,12 +1,5 @@
 import * as Mongoose from "mongoose";
-export interface ISpUser extends Mongoose.Document {
-  _id: Mongoose.ObjectId;
-  name: string;
-  email: string;
-  password: string;
-  eventsCount?: number;
-  totallSpent?: number;
-}
+import { ISpUser } from "src/types/entities/user";
 
 const UserSchema: Mongoose.Schema = new Mongoose.Schema(
   {
@@ -22,14 +15,7 @@ const UserSchema: Mongoose.Schema = new Mongoose.Schema(
       type: String,
       required: true
     },
-    eventsCount: {
-      type: Number,
-      default: 0
-    },
-    totallSpent: {
-      type: Number,
-      default: 0
-    }
+    events: [Mongoose.Schema.Types.ObjectId]
   },
   { timestamps: true }
 );
