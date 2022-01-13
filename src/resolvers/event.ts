@@ -58,8 +58,8 @@ export class EventResolver {
         filter.isClosed = eventsWhere.isClosed;
       }
 
-      if (eventsWhere.participans) {
-        filter.participans = { id: { $in: eventsWhere.participans } };
+      if (eventsWhere.participants) {
+        filter.participans = { id: { $in: eventsWhere.participants } };
       }
 
       const events: ISpEvent[] = await EventModel.find(filter);

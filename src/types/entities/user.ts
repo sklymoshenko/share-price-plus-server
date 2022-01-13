@@ -1,6 +1,6 @@
 import * as Mongoose from "mongoose";
 export interface ISpUser extends Mongoose.Document {
-  _id: Mongoose.ObjectId;
+  id: Mongoose.ObjectId;
   name: string;
   email: string;
   password: string;
@@ -16,7 +16,7 @@ export interface ISpLoaner {
 }
 
 export interface ISpParticipant {
-  _id: ISpUser["_id"];
+  id: ISpUser["_id"];
   name: ISpUser["name"];
   paid: number;
   ows: number;

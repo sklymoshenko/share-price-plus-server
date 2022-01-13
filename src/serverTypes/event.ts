@@ -7,7 +7,7 @@ export interface IEventsWhere {
   price?: number;
   each?: number;
   peopleCount?: number;
-  participans?: ISpParticipant["_id"][];
+  participans?: ISpParticipant["id"][];
   isClosed?: boolean;
   closedAt?: string;
   createdAt?: string;
@@ -32,7 +32,7 @@ export class EventsWhere implements IEventsWhere {
   peopleCount?: number;
 
   @Field(() => [ID], { nullable: true })
-  participans?: ISpParticipant["_id"][];
+  participants?: ISpParticipant["id"][];
 
   @Field({ nullable: true })
   isClosed?: boolean;

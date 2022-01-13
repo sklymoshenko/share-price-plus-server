@@ -18,9 +18,9 @@ type Event {
   each: Float
   isClosed: Boolean
   name: String!
-  participans: [ID!]
+  participans: [SpParticipant!]
   peopleCount: Float
-  price: Float!
+  price: Float
 
   """ISO date format"""
   updatedAt: DateTime
@@ -42,7 +42,7 @@ type Query {
     id: String
     isClosed: Boolean
     name: String
-    participans: [ID!]
+    participants: [ID!]
     peopleCount: Int
     price: Int
 
@@ -61,6 +61,22 @@ type Query {
     updatedAt: String
   ): [User!]!
   spUsersJson: [User!]!
+}
+
+"""Schema for participant loaner"""
+interface SpLoaner {
+  id: ID!
+  paid: Int!
+}
+
+"""Schema for event participant """
+interface SpParticipant {
+  exceed: Int
+  id: ID!
+  loaners: [SpLoaner!]
+  name: String!
+  ows: Int
+  paid: Int
 }
 
 """User Schema"""

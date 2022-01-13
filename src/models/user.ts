@@ -22,6 +22,11 @@ const UserSchema: Mongoose.Schema = new Mongoose.Schema(
     totallSpent: {
       type: Number,
       default: 0
+    },
+    events: {
+      type: Mongoose.Schema.Types.ObjectId,
+      ref: "SpEvent",
+      default: []
     }
   },
   { timestamps: true }
