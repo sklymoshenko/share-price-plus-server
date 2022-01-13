@@ -5,14 +5,14 @@ import EventSchema from "../shemas/event";
 
 // Mongoose models
 import { EventModel } from "../models/event";
+import { UserModel } from "../models/user";
 
 // Types
 import { IError } from "../types/shared";
-import { ISpEvent } from "src/types/entities/event";
+import { ISpEvent } from "../types/entities/event";
 
 // Server types
 import { CreateEvent, EventsWhere } from "../serverTypes/event";
-import { UserModel } from "src/models/user";
 
 @Resolver(EventSchema)
 export class EventResolver {
@@ -82,10 +82,8 @@ export class EventResolver {
         participants
       });
 
-      const participantsIds = participants.map((p) => p.id);
-
-      for (const participId of participantsIds) {
-        await UserModel.updateOne({ _id: participId }, { $push: { events: event._id } });
+      for (const participant of participants) {
+        await UserModel.updateOne({ _id: participant }, { $push: { events: event._id } });
       }
 
       await event.save();

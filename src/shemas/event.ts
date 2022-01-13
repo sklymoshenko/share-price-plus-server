@@ -4,7 +4,7 @@ import { Field, ObjectType, ID } from "type-graphql";
 import { ISpParticipant } from "src/types/entities/user";
 
 // Abstract classes
-import { SpParticipant } from "src/serverTypes/event";
+import { SpParticipant } from "../serverTypes/event";
 
 @ObjectType({ description: "Event Schema" })
 export default class Event {

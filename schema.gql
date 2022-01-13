@@ -27,7 +27,7 @@ type Event {
 }
 
 type Mutation {
-  createEvent(name: String, peopleCount: Float, price: Float): Event!
+  createEvent(name: String, participants: [ID!]!, peopleCount: Float, price: Float): Event!
   register(email: String!, name: String!, password: String!): User!
 }
 

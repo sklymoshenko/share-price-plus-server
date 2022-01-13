@@ -88,6 +88,6 @@ export class CreateEvent implements IEventsWhere {
   @Field({ nullable: true })
   peopleCount?: number;
 
-  @Field(() => [SpParticipant])
-  participants: ISpParticipant[];
+  @Field(() => [ID])
+  participants: ISpParticipant["id"][];
 }
