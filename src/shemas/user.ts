@@ -1,5 +1,4 @@
 import { Field, ObjectType, ID, Int, Root } from "type-graphql";
-import { IsEmail } from "class-validator";
 
 // Types
 import { ISpEvent } from "src/types/entities/event";
@@ -14,7 +13,6 @@ export default class User {
   name: string;
 
   @Field()
-  @IsEmail()
   email: string;
 
   // Wont be in schema
