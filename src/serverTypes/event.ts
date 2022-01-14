@@ -136,9 +136,6 @@ export class CreateEvent implements Partial<ISpEvent> {
   @Field({ nullable: true })
   name: string;
 
-  @Field({ nullable: true })
-  price: number;
-
   @Field(() => [CreateSpParticipant], { defaultValue: [] })
   participants: ISpParticipant[];
 }

@@ -23,7 +23,6 @@ interface AbstractSpParticipant {
 input CreateEvent {
   name: String
   participants: [CreateSpParticipant!] = []
-  price: Float
 }
 
 input CreateSpLoaner {

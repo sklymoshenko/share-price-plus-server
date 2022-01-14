@@ -16,7 +16,9 @@ export default class Event {
   name: String;
 
   @Field()
-  price: number;
+  price(@Root() event: ISpEvent): number {
+    return event.participants.reduce((prev, curr) => prev + curr.paid, 0);
+  }
 
   @Field()
   each(@Root() event: ISpEvent): number {

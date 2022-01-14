@@ -70,10 +70,9 @@ export class EventResolver {
   @Mutation(() => EventSchema)
   async createEvent(@Arg("data") eventCreate: CreateEvent): Promise<ISpEvent | IError> {
     try {
-      const { name, price, participants } = eventCreate;
+      const { name, participants } = eventCreate;
       const event = new EventModel({
         name,
-        price,
         participants
       });
 
