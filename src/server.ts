@@ -36,8 +36,9 @@ async function startServer() {
     await server.start();
     server.applyMiddleware({ app });
     const PORT = process.env.PORT;
+    const HOST = process.env.HOST;
     app.listen(PORT, () => {
-      console.log(`Server: http://localhost:${PORT}, Playground: http://localhost:${PORT}/graphql`);
+      console.log(`Server: http://${HOST}:${PORT}, Playground: http://${HOST}:${PORT}/graphql`);
     });
   } catch (err) {
     console.log(err);
