@@ -30,9 +30,9 @@ async function startServer() {
     const server = new ApolloServer({
       schema,
       context: () => ({
-        playground: true,
         introspection: true
-      })
+      }),
+      introspection: true
     });
 
     const app = Express();
