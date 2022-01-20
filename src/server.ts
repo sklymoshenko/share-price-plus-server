@@ -29,7 +29,10 @@ async function startServer() {
     console.log("Mongodb is connected successfully");
     const server = new ApolloServer({
       schema,
-      context: () => ({})
+      context: () => ({
+        playground: true,
+        introspection: true
+      })
     });
 
     const app = Express();
