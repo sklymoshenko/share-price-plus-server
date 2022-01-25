@@ -5,7 +5,7 @@ import { ArgsType, Field, ID, InputType, Int, InterfaceType, ObjectType } from "
 @InterfaceType({ description: "Schema for participant loaner" })
 export abstract class AbstractSpLoaner implements ISpLoaner {
   @Field(() => ID)
-  id: string;
+  _id: ISpLoaner["_id"];
 
   @Field()
   name: string;
@@ -16,7 +16,7 @@ export abstract class AbstractSpLoaner implements ISpLoaner {
 
 @ObjectType({ implements: AbstractSpLoaner })
 class SpLoaner implements AbstractSpLoaner {
-  id: string;
+  _id: ISpLoaner["_id"];
   name: string;
   paid: number;
 }
@@ -24,7 +24,7 @@ class SpLoaner implements AbstractSpLoaner {
 @InterfaceType({ description: "Schema for event participant " })
 export abstract class AbstractSpParticipant implements ISpParticipant {
   @Field(() => ID)
-  id: string;
+  _id: ISpParticipant["_id"];
 
   @Field()
   name: string;
@@ -44,7 +44,7 @@ export abstract class AbstractSpParticipant implements ISpParticipant {
 
 @ObjectType({ implements: AbstractSpParticipant })
 export class SpParticipant implements AbstractSpParticipant {
-  id: string;
+  _id: ISpParticipant["_id"];
   name: string;
   paid: number;
   ows: number;
@@ -58,7 +58,7 @@ export interface IEventsWhere {
   price?: number;
   each?: number;
   peopleCount?: number;
-  participans?: ISpParticipant["id"][];
+  participans?: ISpParticipant["_id"][];
   isClosed?: boolean;
   closedAt?: string;
   createdAt?: string;
@@ -83,7 +83,7 @@ export class EventsWhere implements IEventsWhere {
   peopleCount?: number;
 
   @Field(() => [ID], { nullable: true })
-  participants?: ISpParticipant["id"][];
+  participants?: ISpParticipant["_id"][];
 
   @Field({ nullable: true })
   isClosed?: boolean;
