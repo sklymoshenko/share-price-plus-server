@@ -8,26 +8,26 @@ import UserSchema from "../shemas/user";
 import { UserModel } from "../models/user";
 
 // Types
-import { IError } from "../types/shared";
 import { ISpUser } from "src/types/entities/user";
 
 // Server types
 import { UsersWhere } from "../serverTypes/user";
+import { UserInputError } from "apollo-server-express";
 
 @Resolver(UserSchema)
 export class UserResolver {
   @Query(() => [UserSchema])
-  async spUsersJson(): Promise<ISpUser[] | IError> {
+  async spUsersJson(): Promise<ISpUser[]> {
     try {
       return await UserModel.find();
     } catch (err) {
       console.log(err);
-      return { message: err };
+      throw new Error(err);
     }
   }
 
   @Query(() => [UserSchema])
-  async spUsers(@Args() userWhere: UsersWhere): Promise<ISpUser[] | IError> {
+  async spUsers(@Args() userWhere: UsersWhere): Promise<ISpUser[]> {
     try {
       const filter: any = {};
 
@@ -47,20 +47,26 @@ export class UserResolver {
       return users;
     } catch (err) {
       console.log(err);
-      return { message: err };
+      throw new Error(err);
     }
   }
 
-  @Mutation(() => UserSchema)
+  @Mutation(() => UserSchema, { nullable: true })
   async register(
     @Arg("name") name: string,
     @Arg("email") email: string,
     @Arg("password") password: string
-  ): Promise<ISpUser | IError> {
+  ): Promise<ISpUser> {
     try {
       const SALT_ROUNDS = process.env.BCRYPT_SALT_ROUNDS as string;
       const SALT = await genSalt(+SALT_ROUNDS);
       const hashedPassword = await hash(password, SALT);
+
+      const users: ISpUser[] = await UserModel.find({ email });
+
+      if (users.length) {
+        throw new Error("Email is already in use");
+      }
 
       const user = new UserModel({
         name,
@@ -73,7 +79,7 @@ export class UserResolver {
       return user;
     } catch (err) {
       console.log(err);
-      return { message: err };
+      throw new UserInputError(err);
     }
   }
 }

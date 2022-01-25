@@ -65,7 +65,7 @@ type Event {
 
 type Mutation {
   createEvent(data: CreateEvent!): Event!
-  register(email: String!, name: String!, password: String!): User!
+  register(email: String!, name: String!, password: String!): User
 }
 
 type Query {
