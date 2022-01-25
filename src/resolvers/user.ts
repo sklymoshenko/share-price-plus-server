@@ -8,7 +8,6 @@ import UserSchema from "../shemas/user";
 import { UserModel } from "../models/user";
 
 // Types
-import { IError } from "../types/shared";
 import { ISpUser } from "src/types/entities/user";
 
 // Server types

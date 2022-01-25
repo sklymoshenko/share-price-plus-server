@@ -8,7 +8,6 @@ import { EventModel } from "../models/event";
 import { UserModel } from "../models/user";
 
 // Types
-import { IError } from "../types/shared";
 import { ISpEvent } from "../types/entities/event";
 
 // Server types
@@ -17,17 +16,17 @@ import { CreateEvent, EventsWhere } from "../serverTypes/event";
 @Resolver(EventSchema)
 export class EventResolver {
   @Query(() => [EventSchema])
-  async spEventsJson(): Promise<ISpEvent[] | IError> {
+  async spEventsJson(): Promise<ISpEvent[]> {
     try {
       return await EventModel.find();
     } catch (err) {
       console.log(err);
-      return { message: err };
+      throw new Error(err);
     }
   }
 
   @Query(() => [EventSchema])
-  async spEvents(@Args() eventsWhere: EventsWhere): Promise<ISpEvent[] | IError> {
+  async spEvents(@Args() eventsWhere: EventsWhere): Promise<ISpEvent[]> {
     try {
       const filter: any = {};
 
@@ -63,12 +62,12 @@ export class EventResolver {
       return events;
     } catch (err) {
       console.log(err);
-      return { message: err };
+      throw new Error(err);
     }
   }
 
   @Mutation(() => EventSchema)
-  async createEvent(@Arg("data") eventCreate: CreateEvent): Promise<ISpEvent | IError> {
+  async createEvent(@Arg("data") eventCreate: CreateEvent): Promise<ISpEvent> {
     try {
       const { name, participants } = eventCreate;
       const event = new EventModel({
@@ -85,7 +84,7 @@ export class EventResolver {
       return event;
     } catch (err) {
       console.log(err);
-      return { message: err };
+      throw new Error(err);
     }
   }
 }
