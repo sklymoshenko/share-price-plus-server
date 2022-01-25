@@ -18,17 +18,17 @@ import { UserInputError } from "apollo-server-express";
 @Resolver(UserSchema)
 export class UserResolver {
   @Query(() => [UserSchema])
-  async spUsersJson(): Promise<ISpUser[] | IError> {
+  async spUsersJson(): Promise<ISpUser[]> {
     try {
       return await UserModel.find();
     } catch (err) {
       console.log(err);
-      return { message: err };
+      throw new Error(err);
     }
   }
 
   @Query(() => [UserSchema])
-  async spUsers(@Args() userWhere: UsersWhere): Promise<ISpUser[] | IError> {
+  async spUsers(@Args() userWhere: UsersWhere): Promise<ISpUser[]> {
     try {
       const filter: any = {};
 
@@ -48,7 +48,7 @@ export class UserResolver {
       return users;
     } catch (err) {
       console.log(err);
-      return { message: err };
+      throw new Error(err);
     }
   }
 
@@ -57,7 +57,7 @@ export class UserResolver {
     @Arg("name") name: string,
     @Arg("email") email: string,
     @Arg("password") password: string
-  ): Promise<ISpUser | undefined> {
+  ): Promise<ISpUser> {
     try {
       const SALT_ROUNDS = process.env.BCRYPT_SALT_ROUNDS as string;
       const SALT = await genSalt(+SALT_ROUNDS);
