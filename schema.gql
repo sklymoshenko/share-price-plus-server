@@ -5,15 +5,15 @@
 
 """Schema for participant loaner"""
 interface AbstractSpLoaner {
-  id: ID!
+  _id: ID!
   name: String!
   paid: Int!
 }
 
 """Schema for event participant """
 interface AbstractSpParticipant {
+  _id: ID!
   exceed: Int!
-  id: ID!
   loaners: [SpLoaner!]
   name: String!
   ows: Int!
@@ -101,14 +101,14 @@ type Query {
 }
 
 type SpLoaner implements AbstractSpLoaner {
-  id: ID!
+  _id: ID!
   name: String!
   paid: Int!
 }
 
 type SpParticipant implements AbstractSpParticipant {
+  _id: ID!
   exceed: Int!
-  id: ID!
   loaners: [SpLoaner!]
   name: String!
   ows: Int!
@@ -117,12 +117,13 @@ type SpParticipant implements AbstractSpParticipant {
 
 """User Schema"""
 type User {
+  _id: ID!
+
   """ISO date format"""
   createdAt: DateTime!
   email: String!
   events: [ID!]!
   eventsCount: Int
-  id: ID!
   name: String!
 
   """ISO date format"""

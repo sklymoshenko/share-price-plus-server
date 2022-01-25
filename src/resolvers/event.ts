@@ -77,7 +77,7 @@ export class EventResolver {
       });
 
       for (const participant of participants) {
-        await UserModel.updateOne({ id: participant.id }, { $push: { events: event._id } });
+        await UserModel.updateOne({ id: participant._id }, { $push: { events: event._id } });
       }
 
       await event.save();

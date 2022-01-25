@@ -7,7 +7,7 @@ import { ISpUser } from "src/types/entities/user";
 @ObjectType({ description: "User Schema" })
 export default class User {
   @Field(() => ID)
-  id: string;
+  _id: string;
 
   @Field()
   name: string;
@@ -30,5 +30,5 @@ export default class User {
   updatedAt: Date;
 
   @Field(() => [ID])
-  events: ISpEvent["id"][];
+  events: ISpEvent["_id"][];
 }
