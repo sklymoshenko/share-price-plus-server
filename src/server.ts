@@ -38,8 +38,12 @@ async function startServer() {
     console.log("Mongodb is connected successfully");
 
     const app = Express();
-
-    app.use(cors({ credentials: true, origin: ["https://studio.apollographql.com", "http://192.168.0.105:3000"] }));
+    app.use(
+      cors({
+        credentials: true,
+        origin: ["http://192.168.0.105:3000", "https://studio.apollographql.com"]
+      })
+    );
 
     const SESSION_SECRET = process.env.SESSION_SECRET || "localsecret";
     app.use(
@@ -50,7 +54,11 @@ async function startServer() {
         name: "spid",
         secret: SESSION_SECRET,
         saveUninitialized: false,
-        cookie: { maxAge: 1000 * 60 * 60 * 24, secure: process.env.NODE_ENV === "production" }, // One day
+        cookie: {
+          maxAge: 1000 * 60 * 60 * 24,
+          secure: process.env.NODE_ENV === "production",
+          httpOnly: false
+        }, // One day
         resave: false
       })
     );
@@ -61,7 +69,7 @@ async function startServer() {
     });
 
     await server.start();
-    server.applyMiddleware({ app });
+    server.applyMiddleware({ app, cors: false });
     app.listen(PORT, () => {
       console.log(`Server: http://${HOST}:${PORT}, Playground: http://${HOST}:${PORT}/graphql`);
     });
