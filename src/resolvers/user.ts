@@ -18,6 +18,19 @@ import { UserInputError } from "apollo-server-express";
 @Resolver(UserSchema)
 export class UserResolver {
   @Query(() => [UserSchema])
+  async currentUser(@Ctx() ctx: IContext): Promise<ISpUser[] | null> {
+    try {
+      if (!ctx.req.session!.userId) {
+        throw new Error("No loged user");
+      }
+
+      return await UserModel.find();
+    } catch (err) {
+      throw new Error(err);
+    }
+  }
+
+  @Query(() => [UserSchema])
   async spUsersJson(): Promise<ISpUser[]> {
     try {
       return await UserModel.find();

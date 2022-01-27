@@ -70,6 +70,7 @@ type Mutation {
 }
 
 type Query {
+  currentUser: [User!]!
   spEvents(
     """UTC format date"""
     closedAt: String

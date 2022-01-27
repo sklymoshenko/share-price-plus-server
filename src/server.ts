@@ -7,6 +7,7 @@ import { config } from "dotenv";
 
 // Bc of esModuleInterop flague ts
 import session = require("express-session");
+import MongoStore = require("connect-mongo");
 import cors = require("cors");
 
 // Bc ts-node-dev doesnt pick up any file that is not included in a entry file
@@ -31,30 +32,33 @@ async function startServer() {
     const PORT = process.env.PORT;
     const HOST = process.env.HOST;
 
-    await Mongoose.connect(
-      `mongodb+srv://${MONGO_USER}:${MONGO_PASS}@sharepriceplus.crwbo.mongodb.net/SharePricePlus?retryWrites=true&w=majority`
-    );
+    const mongoUrl = `mongodb+srv://${MONGO_USER}:${MONGO_PASS}@sharepriceplus.crwbo.mongodb.net/SharePricePlus?retryWrites=true&w=majority`;
+    await Mongoose.connect(mongoUrl);
 
     console.log("Mongodb is connected successfully");
-    const server = new ApolloServer({
-      schema,
-      context: ({ req }) => ({ req })
-    });
 
     const app = Express();
 
-    app.use(cors({ credentials: true, origin: "http://192.168.0.105:3000" }));
+    app.use(cors({ credentials: true, origin: ["https://studio.apollographql.com", "http://192.168.0.105:3000"] }));
 
     const SESSION_SECRET = process.env.SESSION_SECRET || "localsecret";
     app.use(
       session({
+        store: MongoStore.create({
+          mongoUrl
+        }),
         name: "spid",
         secret: SESSION_SECRET,
         saveUninitialized: false,
-        cookie: { maxAge: 1000 * 60 * 60 * 24, httpOnly: true, secure: process.env.NODE_ENV === "production" }, // One day
+        cookie: { maxAge: 1000 * 60 * 60 * 24, secure: process.env.NODE_ENV === "production" }, // One day
         resave: false
       })
     );
+
+    const server = new ApolloServer({
+      schema,
+      context: ({ req }) => ({ req })
+    });
 
     await server.start();
     server.applyMiddleware({ app });
