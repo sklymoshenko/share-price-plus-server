@@ -18,13 +18,13 @@ import { UserInputError } from "apollo-server-express";
 @Resolver(UserSchema)
 export class UserResolver {
   @Query(() => [UserSchema])
-  async currentUser(@Ctx() ctx: IContext): Promise<ISpUser[] | null> {
+  async currentUser(@Ctx() ctx: IContext): Promise<ISpUser | null> {
     try {
       if (!ctx.req.session!.userId) {
         throw new Error("No loged user");
       }
 
-      return await UserModel.find();
+      return await UserModel.findOne({ id: ctx.req.session!.userId });
     } catch (err) {
       throw new Error(err);
     }
@@ -91,7 +91,7 @@ export class UserResolver {
 
       await user.save();
 
-      ctx.req.session!.userId = user._id;
+      ctx.req.session!.userId = user._id.toString();
 
       return user;
     } catch (err) {
@@ -118,7 +118,7 @@ export class UserResolver {
         throw new Error("Password is invalid");
       }
 
-      ctx.req.session!.userId = user._id;
+      ctx.req.session!.userId = user._id.toString();
 
       return user;
     } catch (err) {

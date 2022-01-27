@@ -6,9 +6,9 @@ import * as Mongoose from "mongoose";
 import { config } from "dotenv";
 
 // Bc of esModuleInterop flague ts
-import session = require("express-session");
-import MongoStore = require("connect-mongo");
-import cors = require("cors");
+const session = require("express-session");
+const MongoStore = require("connect-mongo");
+const cors = require("cors");
 
 // Bc ts-node-dev doesnt pick up any file that is not included in a entry file
 require("./types/modules/session");

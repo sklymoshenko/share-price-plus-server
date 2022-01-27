@@ -1,8 +1,8 @@
-// import session = require("express-session");
-import { ObjectId } from "mongoose";
+const session = "express-session";
+export = session;
 
 declare module "express-session" {
-  export interface SessionData {
-    userId: ObjectId;
+  interface SessionData {
+    userId: string;
   }
 }
