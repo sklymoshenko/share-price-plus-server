@@ -31,21 +31,21 @@ async function startServer() {
     const MONGO_PASS = process.env.MONGO_PASS;
     const PORT = process.env.PORT;
     const HOST = process.env.HOST;
+    const SESSION_SECRET = process.env.SESSION_SECRET || "localsecret";
 
     const mongoUrl = `mongodb+srv://${MONGO_USER}:${MONGO_PASS}@sharepriceplus.crwbo.mongodb.net/SharePricePlus?retryWrites=true&w=majority`;
     await Mongoose.connect(mongoUrl);
-
     console.log("Mongodb is connected successfully");
 
     const app = Express();
+
     app.use(
       cors({
         credentials: true,
-        origin: ["http://192.168.0.105:3000", "https://studio.apollographql.com"]
+        origin: ["http://192.168.0.105:3000", "https://studio.apollographql.com", "http://localhost:3000"]
       })
     );
 
-    const SESSION_SECRET = process.env.SESSION_SECRET || "localsecret";
     app.use(
       session({
         store: MongoStore.create({
