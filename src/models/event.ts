@@ -23,6 +23,10 @@ const EventSchema: Mongoose.Schema = new Mongoose.Schema(
     participants: {
       type: Array,
       default: []
+    },
+    isClosed: {
+      type: Boolean,
+      default: false
     }
   },
   { timestamps: true }

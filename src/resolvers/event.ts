@@ -30,8 +30,12 @@ export class EventResolver {
     try {
       const filter: any = {};
 
-      if (eventsWhere.id) {
-        filter._id = eventsWhere.id;
+      if (eventsWhere._id) {
+        filter._id = eventsWhere._id;
+      }
+
+      if (eventsWhere._id_in) {
+        filter._id = { $in: eventsWhere._id_in };
       }
 
       if (eventsWhere.name) {
