@@ -1,5 +1,6 @@
 import { Arg, Args, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import { hash, genSalt, compare } from "bcrypt";
+import { Types } from "mongoose";
 
 // Schema
 import UserSchema from "../shemas/user";
@@ -17,14 +18,14 @@ import { UserInputError } from "apollo-server-express";
 
 @Resolver(UserSchema)
 export class UserResolver {
-  @Query(() => [UserSchema])
+  @Query(() => UserSchema)
   async currentUser(@Ctx() ctx: IContext): Promise<ISpUser | null> {
     try {
       if (!ctx.req.session!.userId) {
         throw new Error("No loged user");
       }
 
-      return await UserModel.findOne({ id: ctx.req.session!.userId });
+      return await UserModel.findOne({ id: new Types.ObjectId(ctx.req.session!.userId) });
     } catch (err) {
       throw new Error(err);
     }
