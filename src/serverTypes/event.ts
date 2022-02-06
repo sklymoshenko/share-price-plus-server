@@ -1,3 +1,4 @@
+import { ObjectId } from "mongoose";
 import { ISpEvent } from "src/types/entities/event";
 import { ISpLoaner, ISpParticipant } from "src/types/entities/user";
 import { ArgsType, Field, ID, InputType, Int, InterfaceType, ObjectType } from "type-graphql";
@@ -67,8 +68,11 @@ export interface IEventsWhere {
 
 @ArgsType()
 export class EventsWhere implements IEventsWhere {
-  @Field({ nullable: true })
-  id?: string;
+  @Field(() => ID, { nullable: true })
+  _id?: ObjectId;
+
+  @Field(() => [ID], { nullable: true })
+  _id_in?: ObjectId[];
 
   @Field({ nullable: true })
   name?: string;
@@ -101,7 +105,7 @@ export class EventsWhere implements IEventsWhere {
 @InputType()
 class CreateSpLoaner implements Partial<AbstractSpLoaner> {
   @Field(() => ID)
-  id: string;
+  _id: ObjectId;
 
   @Field()
   name: string;
@@ -113,7 +117,7 @@ class CreateSpLoaner implements Partial<AbstractSpLoaner> {
 @InputType()
 class CreateSpParticipant implements Partial<AbstractSpParticipant> {
   @Field(() => ID)
-  id: string;
+  _id: ObjectId;
 
   @Field()
   name: string;
@@ -138,4 +142,16 @@ export class CreateEvent implements Partial<ISpEvent> {
 
   @Field(() => [CreateSpParticipant], { defaultValue: [] })
   participants: ISpParticipant[];
+
+  @Field({ nullable: true, defaultValue: 0 })
+  each: number;
+
+  @Field({ nullable: true, defaultValue: 0 })
+  peopleCount?: number;
+
+  @Field({ nullable: true, defaultValue: 0 })
+  price?: number;
+
+  @Field({ nullable: true, defaultValue: false })
+  isClosed?: boolean;
 }

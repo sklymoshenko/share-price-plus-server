@@ -21,19 +21,23 @@ interface AbstractSpParticipant {
 }
 
 input CreateEvent {
+  each: Float = 0
+  isClosed: Boolean = false
   name: String
   participants: [CreateSpParticipant!] = []
+  peopleCount: Float = 0
+  price: Float = 0
 }
 
 input CreateSpLoaner {
-  id: ID!
+  _id: ID!
   name: String!
   paid: Int = 0
 }
 
 input CreateSpParticipant {
+  _id: ID!
   exceed: Int = 0
-  id: ID!
   loaners: [CreateSpLoaner!] = []
   name: String!
   ows: Int = 0
@@ -70,15 +74,17 @@ type Mutation {
 }
 
 type Query {
-  currentUser: [User!]!
+  currentUser: User!
   spEvents(
+    _id: ID
+    _id_in: [ID!]
+
     """UTC format date"""
     closedAt: String
 
     """UTC format date"""
     createdAt: String
     each: Int
-    id: String
     isClosed: Boolean
     name: String
     participants: [ID!]
