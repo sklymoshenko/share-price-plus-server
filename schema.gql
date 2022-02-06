@@ -69,8 +69,10 @@ type Event {
 
 type Mutation {
   createEvent(data: CreateEvent!): Event!
+  deleteEvent(id: String!): Event!
   login(email: String!, password: String!): User
   register(email: String!, name: String!, password: String!): User
+  updateEvent(data: UpdateEvent!, id: String!): Event!
 }
 
 type Query {
@@ -121,6 +123,15 @@ type SpParticipant implements AbstractSpParticipant {
   name: String!
   ows: Int!
   paid: Int!
+}
+
+input UpdateEvent {
+  each: Float
+  isClosed: Boolean = false
+  name: String
+  participants: [CreateSpParticipant!]
+  peopleCount: Float
+  price: Float
 }
 
 """User Schema"""

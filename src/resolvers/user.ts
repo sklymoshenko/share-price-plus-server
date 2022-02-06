@@ -47,7 +47,7 @@ export class UserResolver {
       const filter: any = {};
 
       if (userWhere.id) {
-        filter.id = userWhere.id;
+        filter._id = userWhere.id;
       }
 
       if (userWhere.name) {

@@ -17,17 +17,19 @@ export default class Event {
 
   @Field()
   price(@Root() event: ISpEvent): number {
+    if (!event.participants) return 0;
     return event.participants.reduce((prev, curr) => prev + curr.paid, 0);
   }
 
   @Field()
   each(@Root() event: ISpEvent): number {
+    if (!event.participants) return 0;
     return Math.floor(event.price / event.participants.length);
   }
 
   @Field()
   peopleCount(@Root() event: ISpEvent): number {
-    return event.participants.length;
+    return event.participants?.length || 0;
   }
 
   @Field(() => [SpParticipant], { defaultValue: [] })
