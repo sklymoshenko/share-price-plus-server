@@ -75,6 +75,12 @@ type Mutation {
   updateEvent(data: UpdateEvent!, id: String!): Event!
 }
 
+"""Notification Schema"""
+type NotificationSchema {
+  counter: Float!
+  message: String!
+}
+
 type Query {
   currentUser: User!
   spEvents(
@@ -123,6 +129,10 @@ type SpParticipant implements AbstractSpParticipant {
   name: String!
   ows: Int!
   paid: Int!
+}
+
+type Subscription {
+  newNotification: NotificationSchema!
 }
 
 input UpdateEvent {
