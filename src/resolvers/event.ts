@@ -95,7 +95,7 @@ export class EventResolver {
     try {
       const event = await EventModel.findOneAndUpdate({ _id: id }, data, { new: true });
       const payload: any = { counter: event?.price || 0 + 1 };
-      await pubSub.publish("NOTIFICATIONS", payload);
+      await pubSub.publish("NOTIFICATION", payload);
 
       return event;
     } catch (err) {

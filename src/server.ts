@@ -2,8 +2,11 @@ import { ApolloServer } from "apollo-server-express";
 import * as Express from "express";
 import "reflect-metadata";
 import { buildSchema } from "type-graphql";
+import { execute, subscribe } from "graphql";
 import * as Mongoose from "mongoose";
 import { config } from "dotenv";
+import { createServer } from "http";
+import { SubscriptionServer } from "subscriptions-transport-ws";
 
 // Bc of esModuleInterop flague ts
 const session = require("express-session");
@@ -20,12 +23,26 @@ import { EventResolver } from "./resolvers/event";
 async function startServer() {
   try {
     config();
+    const app = Express();
+    const httpServer = createServer(app);
 
     const schema = await buildSchema({
       resolvers: [UserResolver, EventResolver],
       emitSchemaFile: true,
       dateScalarMode: "isoDate"
     });
+
+    const subscriptionServer = SubscriptionServer.create(
+      {
+        schema,
+        execute,
+        subscribe
+      },
+      {
+        server: httpServer,
+        path: "/graphql"
+      }
+    );
 
     const MONGO_USER = process.env.MONGO_USER;
     const MONGO_PASS = process.env.MONGO_PASS;
@@ -36,8 +53,6 @@ async function startServer() {
     const mongoUrl = `mongodb+srv://${MONGO_USER}:${MONGO_PASS}@sharepriceplus.crwbo.mongodb.net/SharePricePlus?retryWrites=true&w=majority`;
     await Mongoose.connect(mongoUrl);
     console.log("Mongodb is connected successfully");
-
-    const app = Express();
 
     app.use(
       cors({
@@ -65,12 +80,23 @@ async function startServer() {
 
     const server = new ApolloServer({
       schema,
-      context: ({ req }) => ({ req })
+      context: ({ req }) => ({ req }),
+      plugins: [
+        {
+          async serverWillStart() {
+            return {
+              async drainServer() {
+                subscriptionServer.close();
+              }
+            };
+          }
+        }
+      ]
     });
 
     await server.start();
     server.applyMiddleware({ app, cors: false });
-    app.listen(PORT, () => {
+    httpServer.listen(PORT, () => {
       console.log(`Server: http://${HOST}:${PORT}, Playground: http://${HOST}:${PORT}/graphql`);
     });
   } catch (err) {
