@@ -1,7 +1,8 @@
-import { Arg, Args, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Args, Mutation, PubSub, PubSubEngine, Query, Resolver, Root, Subscription } from "type-graphql";
 
 // Schema
 import EventSchema from "../shemas/event";
+import NotificationSchema from "../shemas/notification";
 
 // Mongoose models
 import { EventModel } from "../models/event";
@@ -90,9 +91,11 @@ export class EventResolver {
   }
 
   @Mutation(() => EventSchema)
-  async updateEvent(@Arg("id") id: string, @Arg("data") data: UpdateEvent) {
+  async updateEvent(@Arg("id") id: string, @Arg("data") data: UpdateEvent, @PubSub() pubSub: PubSubEngine) {
     try {
       const event = await EventModel.findOneAndUpdate({ _id: id }, data, { new: true });
+      const payload: any = { counter: event?.price || 0 + 1 };
+      await pubSub.publish("NOTIFICATION", payload);
 
       return event;
     } catch (err) {
@@ -115,5 +118,13 @@ export class EventResolver {
       console.log(err);
       throw new Error(err);
     }
+  }
+
+  @Subscription({ topics: "NOTIFICATION" })
+  newNotification(@Root() notificationPayload: any): NotificationSchema {
+    return {
+      message: "Here",
+      counter: notificationPayload.counter
+    };
   }
 }
