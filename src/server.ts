@@ -57,7 +57,7 @@ async function startServer() {
     app.use(
       cors({
         credentials: true,
-        origin: ["http://192.168.0.105:3000", "https://studio.apollographql.com", "http://localhost:3000"]
+        origin: ["http://192.168.0.103:3000", "https://studio.apollographql.com", "http://localhost:3000"]
       })
     );
 
@@ -73,6 +73,7 @@ async function startServer() {
           maxAge: 1000 * 60 * 60 * 24,
           secure: process.env.NODE_ENV === "production",
           httpOnly: false
+          // sameSite: process.env.NODE_ENV === "production" ? "lax" : "none"
         }, // One day
         resave: false
       })
