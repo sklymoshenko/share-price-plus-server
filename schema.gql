@@ -56,15 +56,21 @@ type Event {
   """ISO date format"""
   closedAt: DateTime
   createdAt: DateTime!
-  each: Float!
+  each: Int!
   isClosed: Boolean
   name: String!
   participants: [SpParticipant!]
-  peopleCount: Float!
-  price: Float!
+  peopleCount: Int!
+  price: Int!
 
   """ISO date format"""
   updatedAt: DateTime
+}
+
+"""Event payed subscription payload"""
+type EventPayed {
+  each: Int!
+  total: Int!
 }
 
 type Mutation {
@@ -73,12 +79,6 @@ type Mutation {
   login(email: String!, password: String!): User
   register(email: String!, name: String!, password: String!): User
   updateEvent(data: UpdateEvent!, id: String!): Event!
-}
-
-"""Notification Schema"""
-type NotificationSchema {
-  counter: Float!
-  message: String!
 }
 
 type Query {
@@ -132,7 +132,7 @@ type SpParticipant implements AbstractSpParticipant {
 }
 
 type Subscription {
-  newNotification: NotificationSchema!
+  eventPayed: EventPayed!
 }
 
 input UpdateEvent {

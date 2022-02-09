@@ -175,3 +175,8 @@ export class UpdateEvent implements Partial<CreateEvent> {
   @Field({ nullable: true, defaultValue: false })
   isClosed?: boolean;
 }
+
+export interface IEventPayedPayload {
+  total: number;
+  each: number;
+}

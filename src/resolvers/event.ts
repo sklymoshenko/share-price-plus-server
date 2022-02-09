@@ -2,7 +2,7 @@ import { Arg, Args, Mutation, PubSub, PubSubEngine, Query, Resolver, Root, Subsc
 
 // Schema
 import EventSchema from "../shemas/event";
-import NotificationSchema from "../shemas/notification";
+import EventPayed from "../shemas/eventSubscription";
 
 // Mongoose models
 import { EventModel } from "../models/event";
@@ -12,7 +12,7 @@ import { UserModel } from "../models/user";
 import { ISpEvent } from "../types/entities/event";
 
 // Server types
-import { CreateEvent, EventsWhere, UpdateEvent } from "../serverTypes/event";
+import { CreateEvent, EventsWhere, IEventPayedPayload, UpdateEvent } from "../serverTypes/event";
 
 @Resolver(EventSchema)
 export class EventResolver {
@@ -93,9 +93,12 @@ export class EventResolver {
   @Mutation(() => EventSchema)
   async updateEvent(@Arg("id") id: string, @Arg("data") data: UpdateEvent, @PubSub() pubSub: PubSubEngine) {
     try {
-      const event = await EventModel.findOneAndUpdate({ _id: id }, data, { new: true });
-      const payload: any = { counter: event?.price || 0 + 1 };
-      await pubSub.publish("NOTIFICATION", payload);
+      const event = await EventModel.findOneAndUpdate({ _id: id }, data, { new: true })!;
+
+      if (data.participants) {
+        const payload: IEventPayedPayload = { total: event?.price || 0, each: event?.each || 0 };
+        await pubSub.publish("UPDATE_EVENT_PAYED", payload);
+      }
 
       return event;
     } catch (err) {
@@ -120,11 +123,8 @@ export class EventResolver {
     }
   }
 
-  @Subscription({ topics: "NOTIFICATION" })
-  newNotification(@Root() notificationPayload: any): NotificationSchema {
-    return {
-      message: "Here",
-      counter: notificationPayload.counter
-    };
+  @Subscription({ topics: "UPDATE_EVENT_PAYED" })
+  eventPayed(@Root() eventPayedPayload: IEventPayedPayload): EventPayed {
+    return eventPayedPayload;
   }
 }
