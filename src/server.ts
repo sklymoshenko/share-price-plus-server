@@ -57,7 +57,12 @@ async function startServer() {
     app.use(
       cors({
         credentials: true,
-        origin: ["http://192.168.0.103:3000", "https://studio.apollographql.com", "http://localhost:3000"]
+        origin: [
+          "http://192.168.0.103:3000",
+          "https://studio.apollographql.com",
+          "http://localhost:3000",
+          "https://sharepriceplus.netlify.app"
+        ]
       })
     );
 
