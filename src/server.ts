@@ -75,13 +75,11 @@ async function startServer() {
         secret: SESSION_SECRET,
         saveUninitialized: false,
         cookie: {
-          path: "/",
-          maxAge: 1000 * 60 * 60 * 24,
+          maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
           secure: process.env.NODE_ENV === "production",
-          httpOnly: false,
-          sameSite: "none",
-          domain: process.env.NODE_ENV === "production" ? ".herokuapp.com" : "localhost"
-        }, // One day
+          httpOnly: true,
+          sameSite: "none"
+        },
         resave: false
       })
     );
