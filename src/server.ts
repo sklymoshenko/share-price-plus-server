@@ -80,7 +80,7 @@ async function startServer() {
           secure: process.env.NODE_ENV === "production",
           httpOnly: false,
           sameSite: "none",
-          domain: process.env.NODE_ENV === "production" ? "netlify.app" : "localhost"
+          domain: process.env.NODE_ENV === "production" ? ".herokuapp.com" : "localhost"
         }, // One day
         resave: false
       })
