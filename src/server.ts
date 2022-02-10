@@ -78,7 +78,8 @@ async function startServer() {
           maxAge: 1000 * 60 * 60 * 24,
           secure: process.env.NODE_ENV === "production",
           httpOnly: false,
-          sameSite: "none"
+          sameSite: "none",
+          domain: process.env.NODE_ENV === "production" ? "netlify.app" : "localhost"
         }, // One day
         resave: false
       })
