@@ -3,6 +3,14 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
+"""Schema subscription participant"""
+interface AbstractParticipant {
+  _id: ID!
+  name: String!
+  ows: Int!
+  paid: Int!
+}
+
 """Schema for participant loaner"""
 interface AbstractSpLoaner {
   _id: ID!
@@ -70,6 +78,7 @@ type Event {
 """Event payed subscription payload"""
 type EventPayed {
   each: Int!
+  participants: [Participant!]!
   total: Int!
 }
 
@@ -79,6 +88,13 @@ type Mutation {
   login(email: String!, password: String!): User
   register(email: String!, name: String!, password: String!): User
   updateEvent(data: UpdateEvent!, id: String!): Event!
+}
+
+type Participant implements AbstractParticipant {
+  _id: ID!
+  name: String!
+  ows: Int!
+  paid: Int!
 }
 
 type Query {

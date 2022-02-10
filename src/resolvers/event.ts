@@ -9,10 +9,10 @@ import { EventModel } from "../models/event";
 import { UserModel } from "../models/user";
 
 // Types
-import { ISpEvent } from "../types/entities/event";
+import { IEventPayedPayload, ISpEvent } from "../types/entities/event";
 
 // Server types
-import { CreateEvent, EventsWhere, IEventPayedPayload, UpdateEvent } from "../serverTypes/event";
+import { CreateEvent, EventsWhere, UpdateEvent } from "../serverTypes/event";
 
 @Resolver(EventSchema)
 export class EventResolver {
@@ -96,7 +96,8 @@ export class EventResolver {
       const event = await EventModel.findOneAndUpdate({ _id: id }, data, { new: true })!;
 
       if (data.participants) {
-        const payload: IEventPayedPayload = { total: event?.price || 0, each: event?.each || 0 };
+        const participants = event!.participants.map((p) => ({ _id: p._id, ows: p.ows, paid: p.paid, name: p.name }));
+        const payload: IEventPayedPayload = { total: event?.price || 0, each: event?.each || 0, participants };
         await pubSub.publish("UPDATE_EVENT_PAYED", payload);
       }
 
