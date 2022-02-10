@@ -1,17 +1,18 @@
-import { Arg, Args, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Args, Mutation, PubSub, PubSubEngine, Query, Resolver, Root, Subscription } from "type-graphql";
 
 // Schema
 import EventSchema from "../shemas/event";
+import EventPayed from "../shemas/eventSubscription";
 
 // Mongoose models
 import { EventModel } from "../models/event";
 import { UserModel } from "../models/user";
 
 // Types
-import { ISpEvent } from "../types/entities/event";
+import { IEventPayedPayload, ISpEvent } from "../types/entities/event";
 
 // Server types
-import { CreateEvent, EventsWhere } from "../serverTypes/event";
+import { CreateEvent, EventsWhere, UpdateEvent } from "../serverTypes/event";
 
 @Resolver(EventSchema)
 export class EventResolver {
@@ -78,10 +79,7 @@ export class EventResolver {
         name,
         participants
       });
-
-      for (const participant of participants) {
-        await UserModel.updateOne({ id: participant._id }, { $push: { events: event._id } });
-      }
+      await UserModel.updateMany({ _id: { $in: participants.map((p) => p._id) } }, { $push: { events: event._id } });
 
       await event.save();
 
@@ -90,5 +88,44 @@ export class EventResolver {
       console.log(err);
       throw new Error(err);
     }
+  }
+
+  @Mutation(() => EventSchema)
+  async updateEvent(@Arg("id") id: string, @Arg("data") data: UpdateEvent, @PubSub() pubSub: PubSubEngine) {
+    try {
+      const event = await EventModel.findOneAndUpdate({ _id: id }, data, { new: true })!;
+
+      if (data.participants) {
+        const participants = event!.participants.map((p) => ({ _id: p._id, ows: p.ows, paid: p.paid, name: p.name }));
+        const payload: IEventPayedPayload = { total: event?.price || 0, each: event?.each || 0, participants };
+        await pubSub.publish("UPDATE_EVENT_PAYED", payload);
+      }
+
+      return event;
+    } catch (err) {
+      console.log(err);
+      throw new Error(err);
+    }
+  }
+
+  @Mutation(() => EventSchema)
+  async deleteEvent(@Arg("id") id: string) {
+    try {
+      const event = await EventModel.findOneAndDelete({ _id: id });
+
+      if (event) {
+        await UserModel.updateMany({ _id: { $in: event.participants.map((p) => p._id) } }, { $pull: { events: id } });
+      }
+
+      return event;
+    } catch (err) {
+      console.log(err);
+      throw new Error(err);
+    }
+  }
+
+  @Subscription({ topics: "UPDATE_EVENT_PAYED" })
+  eventPayed(@Root() eventPayedPayload: IEventPayedPayload): EventPayed {
+    return eventPayedPayload;
   }
 }

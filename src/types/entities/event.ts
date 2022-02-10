@@ -13,3 +13,14 @@ export interface ISpEvent extends Mongoose.Document {
   createdAt?: Date;
   updatedAt?: Date;
 }
+
+export interface IEventPayedPayload {
+  total: number;
+  each: number;
+  participants: {
+    _id: ISpParticipant["_id"];
+    ows: ISpParticipant["ows"];
+    paid: ISpParticipant["paid"];
+    name: ISpParticipant["name"];
+  }[];
+}

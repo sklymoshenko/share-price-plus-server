@@ -155,3 +155,23 @@ export class CreateEvent implements Partial<ISpEvent> {
   @Field({ nullable: true, defaultValue: false })
   isClosed?: boolean;
 }
+@InputType()
+export class UpdateEvent implements Partial<CreateEvent> {
+  @Field({ nullable: true })
+  name?: string;
+
+  @Field(() => [CreateSpParticipant], { nullable: true })
+  participants?: ISpParticipant[];
+
+  @Field({ nullable: true })
+  each?: number;
+
+  @Field({ nullable: true })
+  peopleCount?: number;
+
+  @Field({ nullable: true })
+  price?: number;
+
+  @Field({ nullable: true, defaultValue: false })
+  isClosed?: boolean;
+}

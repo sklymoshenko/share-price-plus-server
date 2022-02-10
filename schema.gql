@@ -3,6 +3,14 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
+"""Schema subscription participant"""
+interface AbstractParticipant {
+  _id: ID!
+  name: String!
+  ows: Int!
+  paid: Int!
+}
+
 """Schema for participant loaner"""
 interface AbstractSpLoaner {
   _id: ID!
@@ -56,21 +64,37 @@ type Event {
   """ISO date format"""
   closedAt: DateTime
   createdAt: DateTime!
-  each: Float!
+  each: Int!
   isClosed: Boolean
   name: String!
   participants: [SpParticipant!]
-  peopleCount: Float!
-  price: Float!
+  peopleCount: Int!
+  price: Int!
 
   """ISO date format"""
   updatedAt: DateTime
 }
 
+"""Event payed subscription payload"""
+type EventPayed {
+  each: Int!
+  participants: [Participant!]!
+  total: Int!
+}
+
 type Mutation {
   createEvent(data: CreateEvent!): Event!
+  deleteEvent(id: String!): Event!
   login(email: String!, password: String!): User
   register(email: String!, name: String!, password: String!): User
+  updateEvent(data: UpdateEvent!, id: String!): Event!
+}
+
+type Participant implements AbstractParticipant {
+  _id: ID!
+  name: String!
+  ows: Int!
+  paid: Int!
 }
 
 type Query {
@@ -121,6 +145,19 @@ type SpParticipant implements AbstractSpParticipant {
   name: String!
   ows: Int!
   paid: Int!
+}
+
+type Subscription {
+  eventPayed: EventPayed!
+}
+
+input UpdateEvent {
+  each: Float
+  isClosed: Boolean = false
+  name: String
+  participants: [CreateSpParticipant!]
+  peopleCount: Float
+  price: Float
 }
 
 """User Schema"""
