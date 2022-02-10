@@ -65,7 +65,7 @@ async function startServer() {
         ]
       })
     );
-
+    app.set("trust proxy", 1);
     app.use(
       session({
         store: MongoStore.create({
