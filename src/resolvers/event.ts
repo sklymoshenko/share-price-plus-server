@@ -93,7 +93,7 @@ export class EventResolver {
   @Mutation(() => EventSchema)
   async updateEvent(@Arg("id") id: string, @Arg("data") data: UpdateEvent, @PubSub() pubSub: PubSubEngine) {
     try {
-      const event = await EventModel.findOneAndUpdate({ _id: id }, data, { new: true })!;
+      const event = await EventModel.findOneAndUpdate({ _id: id }, data, { new: true, upsert: true })!;
 
       if (data.participants) {
         const participants = event!.participants.map((p) => ({ _id: p._id, ows: p.ows, paid: p.paid, name: p.name }));
