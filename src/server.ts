@@ -49,6 +49,7 @@ async function startServer() {
     const PORT = process.env.PORT;
     const HOST = process.env.HOST;
     const SESSION_SECRET = process.env.SESSION_SECRET || "localsecret";
+    const IS_PROD = process.env.NODE_ENV === "production";
 
     const mongoUrl = `mongodb+srv://${MONGO_USER}:${MONGO_PASS}@sharepriceplus.crwbo.mongodb.net/SharePricePlus?retryWrites=true&w=majority`;
     await Mongoose.connect(mongoUrl);
@@ -65,6 +66,14 @@ async function startServer() {
         ]
       })
     );
+
+    const cookie = {
+      maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+      secure: IS_PROD,
+      httpOnly: true,
+      ...(IS_PROD ? { sameSite: "none" } : {})
+    };
+
     app.set("trust proxy", 1);
     app.use(
       session({
@@ -74,12 +83,7 @@ async function startServer() {
         name: "spid",
         secret: SESSION_SECRET,
         saveUninitialized: false,
-        cookie: {
-          maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-          secure: process.env.NODE_ENV === "production",
-          httpOnly: true,
-          sameSite: "none"
-        },
+        cookie,
         resave: false
       })
     );
