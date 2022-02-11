@@ -57,10 +57,15 @@ async function startServer() {
     app.use(
       cors({
         credentials: true,
-        origin: ["http://192.168.0.103:3000", "https://studio.apollographql.com", "http://localhost:3000"]
+        origin: [
+          "http://192.168.0.103:3000",
+          "https://studio.apollographql.com",
+          "http://localhost:3000",
+          "https://sharepriceplus.netlify.app"
+        ]
       })
     );
-
+    app.set("trust proxy", 1);
     app.use(
       session({
         store: MongoStore.create({
@@ -70,11 +75,11 @@ async function startServer() {
         secret: SESSION_SECRET,
         saveUninitialized: false,
         cookie: {
-          maxAge: 1000 * 60 * 60 * 24,
+          maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
           secure: process.env.NODE_ENV === "production",
-          httpOnly: false
-          // sameSite: process.env.NODE_ENV === "production" ? "lax" : "none"
-        }, // One day
+          httpOnly: true,
+          sameSite: "none"
+        },
         resave: false
       })
     );
