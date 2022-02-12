@@ -135,7 +135,11 @@ export class UserResolver {
   @Mutation(() => UserSchema, { nullable: true })
   async addFriend(@Arg("email") email: string, @Arg("userId") userId: string): Promise<ISpUser | null> {
     try {
-      const friend: ISpUser | null = await UserModel.findOne({ email });
+      const friend: ISpUser | null = await UserModel.findOneAndUpdate(
+        { email },
+        { $push: { friends: userId } },
+        { new: true }
+      );
 
       if (!friend) {
         throw new Error("There is no user with this email");
