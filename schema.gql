@@ -110,7 +110,10 @@ type Query {
     createdAt: String
     each: Int
     isClosed: Boolean
+    limit: Int = 30
     name: String
+    order: String = "asc"
+    page: Int = 0
     participants: [ID!]
     peopleCount: Int
     price: Int
@@ -118,7 +121,7 @@ type Query {
     """UTC format date"""
     updatedAt: String
   ): [Event!]!
-  spEventsJson: [Event!]!
+  spEventsJson(limit: Int = 30, order: String = "asc", page: Int = 0): [Event!]!
   spUsers(
     """ISO format date"""
     createdAt: String
