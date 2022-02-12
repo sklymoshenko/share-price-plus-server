@@ -69,7 +69,7 @@ export class EventResolver {
       const events: ISpEvent[] = await EventModel.find(filter)
         .limit(limit)
         .skip(page)
-        .sort({ isClosed: "desc", createdAt: order });
+        .sort({ isClosed: "asc", createdAt: order });
       return events;
     } catch (err) {
       console.log(err);
