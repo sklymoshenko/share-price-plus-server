@@ -174,4 +174,7 @@ export class UpdateEvent implements Partial<CreateEvent> {
 
   @Field({ nullable: true, defaultValue: false })
   isClosed?: boolean;
+
+  @Field({ nullable: true })
+  closedAt?: Date;
 }
