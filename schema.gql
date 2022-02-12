@@ -83,6 +83,7 @@ type EventPayed {
 }
 
 type Mutation {
+  addFriend(email: String!, userId: String!): User
   createEvent(data: CreateEvent!): Event!
   deleteEvent(id: String!): Event!
   login(email: String!, password: String!): User
@@ -123,6 +124,8 @@ type Query {
   ): [Event!]!
   spEventsJson(limit: Int = 30, order: String = "asc", page: Int = 0): [Event!]!
   spUsers(
+    _id_in: [ID!]
+
     """ISO format date"""
     createdAt: String
     email: String
@@ -173,6 +176,7 @@ type User {
   email: String!
   events: [ID!]!
   eventsCount: Int
+  friends: [ID!]!
   name: String!
 
   """ISO date format"""

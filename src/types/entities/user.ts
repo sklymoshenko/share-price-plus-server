@@ -7,6 +7,7 @@ export interface ISpUser extends Mongoose.Document {
   email: string;
   password: string;
   events: ISpEvent["_id"][];
+  friends: ISpUser["_id"][];
   eventsCount?: number;
   createdAt: Date;
   updatedAt: Date;

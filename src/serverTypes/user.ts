@@ -1,4 +1,5 @@
-import { ArgsType, Field } from "type-graphql";
+import { ObjectId } from "mongoose";
+import { ArgsType, Field, ID } from "type-graphql";
 
 export interface IUsersWhere {
   id?: string;
@@ -12,6 +13,9 @@ export interface IUsersWhere {
 export class UsersWhere implements IUsersWhere {
   @Field({ nullable: true })
   id?: string;
+
+  @Field(() => [ID], { nullable: true })
+  _id_in?: ObjectId[];
 
   @Field({ nullable: true })
   name?: string;
