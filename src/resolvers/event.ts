@@ -13,13 +13,15 @@ import { IEventPayedPayload, ISpEvent } from "../types/entities/event";
 
 // Server types
 import { CreateEvent, EventsWhere, UpdateEvent } from "../serverTypes/event";
+import { QueryOptions } from "../serverTypes/shared";
 
 @Resolver(EventSchema)
 export class EventResolver {
   @Query(() => [EventSchema])
-  async spEventsJson(): Promise<ISpEvent[]> {
+  async spEventsJson(@Args() options: QueryOptions): Promise<ISpEvent[]> {
     try {
-      return await EventModel.find();
+      const { page = 0, limit = 30, order = "asc" } = options;
+      return await EventModel.find().limit(limit).skip(page).sort({ createdAt: order });
     } catch (err) {
       console.log(err);
       throw new Error(err);
@@ -27,8 +29,9 @@ export class EventResolver {
   }
 
   @Query(() => [EventSchema])
-  async spEvents(@Args() eventsWhere: EventsWhere): Promise<ISpEvent[]> {
+  async spEvents(@Args() eventsWhere: EventsWhere, @Args() options: QueryOptions): Promise<ISpEvent[]> {
     try {
+      const { page = 0, limit = 30, order = "asc" } = options;
       const filter: any = {};
 
       if (eventsWhere._id) {
@@ -63,7 +66,10 @@ export class EventResolver {
         filter.participans = { id: { $in: eventsWhere.participants } };
       }
 
-      const events: ISpEvent[] = await EventModel.find(filter);
+      const events: ISpEvent[] = await EventModel.find(filter)
+        .limit(limit)
+        .skip(page)
+        .sort({ isClosed: "desc", createdAt: order });
       return events;
     } catch (err) {
       console.log(err);
