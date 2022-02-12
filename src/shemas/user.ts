@@ -31,4 +31,7 @@ export default class User {
 
   @Field(() => [ID])
   events: ISpEvent["_id"][];
+
+  @Field(() => [ID])
+  friends: ISpUser["_id"][];
 }

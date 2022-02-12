@@ -50,6 +50,10 @@ export class UserResolver {
         filter._id = userWhere.id;
       }
 
+      if (userWhere._id_in) {
+        filter._id = { $in: userWhere._id_in };
+      }
+
       if (userWhere.name) {
         filter.name = { $regex: String(userWhere.name).toLowerCase(), $options: "i" };
       }
@@ -122,6 +126,24 @@ export class UserResolver {
       ctx.req.session!.userId = user._id.toString();
 
       return user;
+    } catch (err) {
+      console.log(err);
+      throw new UserInputError(err);
+    }
+  }
+
+  @Mutation(() => UserSchema, { nullable: true })
+  async addFriend(@Arg("email") email: string, @Arg("userId") userId: string): Promise<ISpUser | null> {
+    try {
+      const friend: ISpUser | null = await UserModel.findOne({ email });
+
+      if (!friend) {
+        throw new Error("There is no user with this email");
+      }
+
+      await UserModel.findOneAndUpdate({ _id: userId }, { $push: { friends: friend._id } }, { new: true });
+
+      return friend;
     } catch (err) {
       console.log(err);
       throw new UserInputError(err);

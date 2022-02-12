@@ -15,7 +15,8 @@ const UserSchema: Mongoose.Schema = new Mongoose.Schema(
       type: String,
       required: true
     },
-    events: [Mongoose.Schema.Types.ObjectId]
+    events: [Mongoose.Schema.Types.ObjectId],
+    friends: [Mongoose.Schema.Types.ObjectId]
   },
   { timestamps: true }
 );
