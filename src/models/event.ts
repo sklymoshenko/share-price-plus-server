@@ -46,6 +46,9 @@ const EventSchema: Mongoose.Schema = new Mongoose.Schema(
     isClosed: {
       type: Boolean,
       default: false
+    },
+    closedAt: {
+      type: Date
     }
   },
   { timestamps: true }
