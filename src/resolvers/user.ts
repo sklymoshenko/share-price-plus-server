@@ -133,16 +133,16 @@ export class UserResolver {
   }
 
   @Mutation(() => UserSchema, { nullable: true })
-  async addFriend(@Arg("email") email: string, @Arg("userId") userId: string): Promise<ISpUser | null> {
+  async addFriend(@Arg("name") name: string, @Arg("userId") userId: string): Promise<ISpUser | null> {
     try {
       const friend: ISpUser | null = await UserModel.findOneAndUpdate(
-        { email },
+        { name },
         { $push: { friends: userId } },
         { new: true }
       );
 
       if (!friend) {
-        throw new Error("There is no user with this email");
+        throw new Error("There is no user with this name");
       }
 
       await UserModel.findOneAndUpdate({ _id: userId }, { $push: { friends: friend._id } }, { new: true });

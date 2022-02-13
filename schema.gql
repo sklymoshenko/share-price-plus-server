@@ -83,7 +83,7 @@ type EventPayed {
 }
 
 type Mutation {
-  addFriend(email: String!, userId: String!): User
+  addFriend(name: String!, userId: String!): User
   createEvent(data: CreateEvent!): Event!
   deleteEvent(id: String!): Event!
   login(email: String!, password: String!): User

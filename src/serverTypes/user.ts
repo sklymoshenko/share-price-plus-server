@@ -3,6 +3,7 @@ import { ArgsType, Field, ID } from "type-graphql";
 
 export interface IUsersWhere {
   id?: string;
+  _id_in?: ObjectId[];
   name?: string;
   email?: string;
   createdAt?: string;
