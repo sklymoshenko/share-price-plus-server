@@ -3,6 +3,20 @@ import { ISpEvent } from "src/types/entities/event";
 import { ISpParticipant } from "src/types/entities/user";
 import { ISpParticipantVirtualThis } from "src/types/shared";
 
+const PaymentSchema: Mongoose.Schema = new Mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true
+    },
+    price: {
+      type: Number,
+      required: true
+    }
+  },
+  { timestamps: true }
+);
+
 const LoanerSchema: Mongoose.Schema = new Mongoose.Schema({
   name: {
     type: String
@@ -43,6 +57,7 @@ const EventSchema: Mongoose.Schema = new Mongoose.Schema(
       required: true
     },
     participants: [ParticipantSchema],
+    payments: [PaymentSchema],
     isClosed: {
       type: Boolean,
       default: false

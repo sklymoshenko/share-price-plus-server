@@ -14,6 +14,12 @@ export interface ISpEvent extends Mongoose.Document {
   updatedAt?: Date;
 }
 
+export interface ISpEventPayment {
+  _id: Mongoose.ObjectId;
+  name: string;
+  price: number;
+}
+
 export interface IEventPayedPayload {
   total: number;
   each: number;
