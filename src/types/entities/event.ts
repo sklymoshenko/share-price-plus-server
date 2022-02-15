@@ -41,10 +41,11 @@ export interface IEventPayedPayload {
 export interface ISpEventHistoryItemChangeParticipants {
   _id: Mongoose.ObjectId;
   name: ISpParticipant["name"];
-  paid: ISpParticipant["paid"];
+  paid?: ISpParticipant["paid"];
 }
 
 export interface ISpEventHistoryItemChange {
+  _id: Mongoose.ObjectId;
   participants?: ISpEventHistoryItemChangeParticipants[];
   name?: ISpEvent["name"];
   isClosed?: ISpEvent["isClosed"];
@@ -52,7 +53,7 @@ export interface ISpEventHistoryItemChange {
 }
 export interface ISpEventHistoryItem {
   _id: Mongoose.ObjectId;
-  userName: string;
   userId: Mongoose.ObjectId;
+  userName: string;
   change: ISpEventHistoryItemChange;
 }

@@ -11,13 +11,6 @@ import { ArgsType, Field, ID, InputType, Int, InterfaceType, ObjectType } from "
 
 @InterfaceType({ description: "Schema for participants change " })
 export abstract class AbstractSpEventHistoryItemChangeParticipants implements ISpEventHistoryItemChangeParticipants {
-  _id: Schema.Types.ObjectId;
-  name: string;
-  paid: number;
-}
-
-@ObjectType({ implements: AbstractSpEventHistoryItemChangeParticipants })
-export class SpEventHistoryItemChangeParticipants implements AbstractSpEventHistoryItemChangeParticipants {
   @Field(() => ID)
   _id: Schema.Types.ObjectId;
 
@@ -25,7 +18,14 @@ export class SpEventHistoryItemChangeParticipants implements AbstractSpEventHist
   name: string;
 
   @Field()
-  paid: number;
+  paid?: number;
+}
+
+@ObjectType({ implements: AbstractSpEventHistoryItemChangeParticipants })
+export class SpEventHistoryItemChangeParticipants implements AbstractSpEventHistoryItemChangeParticipants {
+  _id: Schema.Types.ObjectId;
+  name: string;
+  paid?: number;
 }
 @InputType()
 export class CreateSpEventHistoryItemChangeParticipants implements AbstractSpEventHistoryItemChangeParticipants {
@@ -35,45 +35,49 @@ export class CreateSpEventHistoryItemChangeParticipants implements AbstractSpEve
   @Field()
   name: string;
 
-  @Field()
-  paid: number;
+  @Field({ nullable: true, defaultValue: 0 })
+  paid?: number;
 }
 
 @InterfaceType({ description: "Schema for event history item" })
 export abstract class AbstractSpEventHistoryItemChange implements ISpEventHistoryItemChange {
+  @Field(() => ID)
+  _id: Schema.Types.ObjectId;
+
+  @Field({ nullable: true })
   name?: string;
+
+  @Field(() => [SpEventHistoryItemChangeParticipants], { nullable: true })
   participants?: ISpEventHistoryItemChangeParticipants[];
+
+  @Field({ nullable: true })
   closedAt?: Date;
+
+  @Field({ nullable: true })
   isClosed?: boolean;
 }
 
 @ObjectType({ implements: AbstractSpEventHistoryItemChange })
-class SpEventHistoryItemChange implements AbstractSpEventHistoryItemChange {
-  @Field()
+export class SpEventHistoryItemChange implements AbstractSpEventHistoryItemChange {
+  _id: Schema.Types.ObjectId;
   name?: string;
-
-  @Field(() => SpEventHistoryItemChangeParticipants)
   participants?: ISpEventHistoryItemChangeParticipants[];
-
-  @Field()
   closedAt?: Date;
-
-  @Field()
   isClosed?: boolean;
 }
 
 @InputType()
-class CreateSpEventHistoryItemChange implements AbstractSpEventHistoryItemChange {
+class CreateSpEventHistoryItemChange implements Partial<AbstractSpEventHistoryItemChange> {
   @Field({ nullable: true })
   name?: string;
 
-  @Field(() => CreateSpEventHistoryItemChangeParticipants, { nullable: true })
+  @Field(() => [CreateSpEventHistoryItemChangeParticipants], { nullable: true })
   participants?: ISpEventHistoryItemChangeParticipants[];
 
   @Field({ nullable: true })
   closedAt?: Date;
 
-  @Field()
+  @Field({ defaultValue: false })
   isClosed?: boolean;
 }
 
@@ -93,7 +97,7 @@ export abstract class AbstractSpEventHistoryItem implements ISpEventHistoryItem 
 }
 
 @ObjectType({ implements: AbstractSpEventHistoryItem })
-class SpEventHistoryItem implements AbstractSpEventHistoryItem {
+export class SpEventHistoryItem implements AbstractSpEventHistoryItem {
   _id: Schema.Types.ObjectId;
   userId: Schema.Types.ObjectId;
   userName: string;

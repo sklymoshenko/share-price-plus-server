@@ -27,7 +27,7 @@ ParticipantSchema.virtual("exceed").get(function (this: ISpParticipantVirtualThi
 const HistoryItemChange: Mongoose.Schema = new Mongoose.Schema({
   name: String,
   participants: [ParticipantSchema],
-  isCosed: {
+  isClosed: {
     type: Boolean,
     default: false
   },
