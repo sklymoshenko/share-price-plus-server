@@ -11,44 +11,37 @@ interface AbstractParticipant {
   paid: Int!
 }
 
-"""Schema for participant loaner"""
-interface AbstractSpLoaner {
-  _id: ID!
-  name: String!
-  paid: Int!
-}
-
 """Schema for event participant """
 interface AbstractSpParticipant {
   _id: ID!
   exceed: Int!
-  loaners: [SpLoaner!]
   name: String!
   ows: Int!
   paid: Int!
 }
 
 input CreateEvent {
-  each: Float = 0
   isClosed: Boolean = false
   name: String
   participants: [CreateSpParticipant!] = []
-  peopleCount: Float = 0
-  price: Float = 0
 }
 
-input CreateSpLoaner {
+input CreateSpEventHistoryItemChange {
+  closedAt: DateTime
+  isClosed: Boolean!
+  name: String
+  participants: CreateSpEventHistoryItemChangeParticipants
+}
+
+input CreateSpEventHistoryItemChangeParticipants {
   _id: ID!
   name: String!
-  paid: Int = 0
+  paid: Float!
 }
 
 input CreateSpParticipant {
   _id: ID!
-  exceed: Int = 0
-  loaners: [CreateSpLoaner!] = []
   name: String!
-  ows: Int = 0
   paid: Int = 0
 }
 
@@ -138,16 +131,9 @@ type Query {
   spUsersJson: [User!]!
 }
 
-type SpLoaner implements AbstractSpLoaner {
-  _id: ID!
-  name: String!
-  paid: Int!
-}
-
 type SpParticipant implements AbstractSpParticipant {
   _id: ID!
   exceed: Int!
-  loaners: [SpLoaner!]
   name: String!
   ows: Int!
   paid: Int!
@@ -158,13 +144,9 @@ type Subscription {
 }
 
 input UpdateEvent {
-  closedAt: DateTime
-  each: Float
-  isClosed: Boolean = false
-  name: String
-  participants: [CreateSpParticipant!]
-  peopleCount: Float
-  price: Float
+  change: CreateSpEventHistoryItemChange = {}
+  userId: ID!
+  userName: String!
 }
 
 """User Schema"""

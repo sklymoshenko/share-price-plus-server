@@ -13,17 +13,10 @@ export interface ISpUser extends Mongoose.Document {
   updatedAt: Date;
 }
 
-export interface ISpLoaner {
-  _id: ISpUser["_id"];
-  name: ISpUser["name"];
-  paid: ISpParticipant["paid"];
-}
-
 export interface ISpParticipant {
   _id: ISpUser["_id"];
   name: ISpUser["name"];
   paid: number;
   ows: number;
   exceed: number;
-  loaners: ISpLoaner[];
 }

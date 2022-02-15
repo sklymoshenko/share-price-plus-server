@@ -14,10 +14,17 @@ export interface ISpEvent extends Mongoose.Document {
   updatedAt?: Date;
 }
 
-export interface ISpEventPayment {
-  _id: Mongoose.ObjectId;
-  name: string;
-  price: number;
+export interface IEventsWhere {
+  id?: string;
+  name?: string;
+  price?: number;
+  each?: number;
+  peopleCount?: number;
+  participans?: ISpParticipant["_id"][];
+  isClosed?: boolean;
+  closedAt?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface IEventPayedPayload {
@@ -29,4 +36,23 @@ export interface IEventPayedPayload {
     paid: ISpParticipant["paid"];
     name: ISpParticipant["name"];
   }[];
+}
+
+export interface ISpEventHistoryItemChangeParticipants {
+  _id: Mongoose.ObjectId;
+  name: ISpParticipant["name"];
+  paid: ISpParticipant["paid"];
+}
+
+export interface ISpEventHistoryItemChange {
+  participants?: ISpEventHistoryItemChangeParticipants[];
+  name?: ISpEvent["name"];
+  isClosed?: ISpEvent["isClosed"];
+  closedAt?: ISpEvent["closedAt"];
+}
+export interface ISpEventHistoryItem {
+  _id: Mongoose.ObjectId;
+  userName: string;
+  userId: Mongoose.ObjectId;
+  change: ISpEventHistoryItemChange;
 }
