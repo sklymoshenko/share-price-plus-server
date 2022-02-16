@@ -9,7 +9,7 @@ import { EventModel } from "../models/event";
 import { UserModel } from "../models/user";
 
 // Types
-import { IEventPayedPayload, ISpEvent } from "../types/entities/event";
+import { IEventPayedPayload, ISpEvent, ISpEventHistoryItemChangeParticipants } from "../types/entities/event";
 
 // Server types
 import { CreateEvent, EventsWhere, UpdateEvent } from "../serverTypes/event";
@@ -63,7 +63,7 @@ export class EventResolver {
       }
 
       if (eventsWhere.participants) {
-        filter.participans = { id: { $in: eventsWhere.participants } };
+        filter.participants = { id: { $in: eventsWhere.participants } };
       }
 
       const events: ISpEvent[] = await EventModel.find(filter)
@@ -99,12 +99,29 @@ export class EventResolver {
   @Mutation(() => EventSchema)
   async updateEvent(@Arg("id") id: string, @Arg("data") data: UpdateEvent, @PubSub() pubSub: PubSubEngine) {
     try {
-      const event = await EventModel.findOneAndUpdate({ _id: id }, data, { new: true, upsert: true })!;
+      // When updating participants we want to add to history change just changed one
+      let history = data;
+      if (data.change.participants) {
+        const existingEvent = await EventModel.findOne({ _id: id });
+        const diff = data.change.participants.filter((p: ISpEventHistoryItemChangeParticipants) => {
+          const existing = existingEvent!.participants.find((ep) => ep._id.toString() === p._id.toString());
+          if (!existing) return false;
+          return existing.paid !== p.paid;
+        });
 
-      if (data.participants) {
-        const participants = event!.participants.map((p) => ({ _id: p._id, ows: p.ows, paid: p.paid, name: p.name }));
-        const payload: IEventPayedPayload = { total: event?.price || 0, each: event?.each || 0, participants };
-        await pubSub.publish("UPDATE_EVENT_PAYED", payload);
+        if (diff.length) {
+          history = { ...data, change: { ...data.change, participants: diff } };
+        }
+      }
+
+      const event = await EventModel.findOneAndUpdate(
+        { _id: id },
+        { $set: data.change, $push: { history } },
+        { new: true, upsert: true }
+      )!;
+
+      if (data.change?.participants) {
+        await triggerEventPayedSubscr(event, pubSub);
       }
 
       return event;
@@ -134,4 +151,10 @@ export class EventResolver {
   eventPayed(@Root() eventPayedPayload: IEventPayedPayload): EventPayed {
     return eventPayedPayload;
   }
+}
+
+async function triggerEventPayedSubscr(event: ISpEvent, pubSub: PubSubEngine) {
+  const participants = event!.participants.map((p) => ({ _id: p._id, ows: p.ows, paid: p.paid, name: p.name }));
+  const payload: IEventPayedPayload = { total: event?.price || 0, each: event?.each || 0, participants };
+  await pubSub.publish("UPDATE_EVENT_PAYED", payload);
 }

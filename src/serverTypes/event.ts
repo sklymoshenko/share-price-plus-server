@@ -1,25 +1,119 @@
-import { ObjectId } from "mongoose";
-import { ISpEvent } from "src/types/entities/event";
-import { ISpLoaner, ISpParticipant } from "src/types/entities/user";
+import { ObjectId, Schema } from "mongoose";
+import {
+  IEventsWhere,
+  ISpEvent,
+  ISpEventHistoryItem,
+  ISpEventHistoryItemChange,
+  ISpEventHistoryItemChangeParticipants
+} from "src/types/entities/event";
+import { ISpParticipant, ISpUser } from "src/types/entities/user";
 import { ArgsType, Field, ID, InputType, Int, InterfaceType, ObjectType } from "type-graphql";
 
-@InterfaceType({ description: "Schema for participant loaner" })
-export abstract class AbstractSpLoaner implements ISpLoaner {
+@InterfaceType({ description: "Schema for participants change " })
+export abstract class AbstractSpEventHistoryItemChangeParticipants implements ISpEventHistoryItemChangeParticipants {
   @Field(() => ID)
-  _id: ISpLoaner["_id"];
+  _id: Schema.Types.ObjectId;
 
   @Field()
   name: string;
 
-  @Field(() => Int)
-  paid: number;
+  @Field()
+  paid?: number;
+
+  @Field()
+  createdAt?: Date;
 }
 
-@ObjectType({ implements: AbstractSpLoaner })
-class SpLoaner implements AbstractSpLoaner {
-  _id: ISpLoaner["_id"];
+@ObjectType({ implements: AbstractSpEventHistoryItemChangeParticipants })
+export class SpEventHistoryItemChangeParticipants implements AbstractSpEventHistoryItemChangeParticipants {
+  _id: Schema.Types.ObjectId;
   name: string;
-  paid: number;
+  paid?: number;
+  createdAt?: Date;
+}
+@InputType()
+export class CreateSpEventHistoryItemChangeParticipants implements AbstractSpEventHistoryItemChangeParticipants {
+  @Field(() => ID)
+  _id: Schema.Types.ObjectId;
+
+  @Field()
+  name: string;
+
+  @Field({ nullable: true, defaultValue: 0 })
+  paid?: number;
+}
+
+@InterfaceType({ description: "Schema for event history item" })
+export abstract class AbstractSpEventHistoryItemChange implements ISpEventHistoryItemChange {
+  @Field(() => ID)
+  _id: Schema.Types.ObjectId;
+
+  @Field({ nullable: true })
+  name?: string;
+
+  @Field(() => [SpEventHistoryItemChangeParticipants], { nullable: true })
+  participants?: ISpEventHistoryItemChangeParticipants[];
+
+  @Field()
+  createdAt?: Date;
+
+  @Field({ nullable: true })
+  closedAt?: Date;
+
+  @Field({ nullable: true })
+  isClosed?: boolean;
+}
+
+@ObjectType({ implements: AbstractSpEventHistoryItemChange })
+export class SpEventHistoryItemChange implements AbstractSpEventHistoryItemChange {
+  _id: Schema.Types.ObjectId;
+  name?: string;
+  participants?: ISpEventHistoryItemChangeParticipants[];
+  closedAt?: Date;
+  isClosed?: boolean;
+  createdAt: Date;
+}
+
+@InputType()
+class CreateSpEventHistoryItemChange implements Partial<AbstractSpEventHistoryItemChange> {
+  @Field({ nullable: true })
+  name?: string;
+
+  @Field(() => [CreateSpEventHistoryItemChangeParticipants], { nullable: true })
+  participants?: ISpEventHistoryItemChangeParticipants[];
+
+  @Field({ nullable: true })
+  closedAt?: Date;
+
+  @Field({ defaultValue: false })
+  isClosed?: boolean;
+}
+
+@InterfaceType({ description: "Schema for event history item" })
+export abstract class AbstractSpEventHistoryItem implements ISpEventHistoryItem {
+  @Field(() => ID)
+  _id: ISpEvent["_id"];
+
+  @Field()
+  userName: string;
+
+  @Field(() => ID)
+  userId: ISpUser["_id"];
+
+  @Field()
+  createdAt: Date;
+
+  @Field(() => SpEventHistoryItemChange)
+  change: ISpEventHistoryItem["change"];
+}
+
+@ObjectType({ implements: AbstractSpEventHistoryItem })
+export class SpEventHistoryItem implements AbstractSpEventHistoryItem {
+  _id: Schema.Types.ObjectId;
+  userId: Schema.Types.ObjectId;
+  userName: string;
+  change: ISpEventHistoryItem["change"];
+  createdAt: Date;
 }
 
 @InterfaceType({ description: "Schema for event participant " })
@@ -38,9 +132,6 @@ export abstract class AbstractSpParticipant implements ISpParticipant {
 
   @Field(() => Int)
   exceed: number;
-
-  @Field(() => [SpLoaner], { defaultValue: [] })
-  loaners: ISpLoaner[];
 }
 
 @ObjectType({ implements: AbstractSpParticipant })
@@ -50,20 +141,6 @@ export class SpParticipant implements AbstractSpParticipant {
   paid: number;
   ows: number;
   exceed: number;
-  loaners: ISpLoaner[];
-}
-
-export interface IEventsWhere {
-  id?: string;
-  name?: string;
-  price?: number;
-  each?: number;
-  peopleCount?: number;
-  participans?: ISpParticipant["_id"][];
-  isClosed?: boolean;
-  closedAt?: string;
-  createdAt?: string;
-  updatedAt?: string;
 }
 
 @ArgsType()
@@ -103,18 +180,6 @@ export class EventsWhere implements IEventsWhere {
 }
 
 @InputType()
-class CreateSpLoaner implements Partial<AbstractSpLoaner> {
-  @Field(() => ID)
-  _id: ObjectId;
-
-  @Field()
-  name: string;
-
-  @Field(() => Int, { defaultValue: 0 })
-  paid: number;
-}
-
-@InputType()
 class CreateSpParticipant implements Partial<AbstractSpParticipant> {
   @Field(() => ID)
   _id: ObjectId;
@@ -123,16 +188,7 @@ class CreateSpParticipant implements Partial<AbstractSpParticipant> {
   name: string;
 
   @Field(() => Int, { defaultValue: 0 })
-  ows: number;
-
-  @Field(() => Int, { defaultValue: 0 })
   paid: number;
-
-  @Field(() => Int, { defaultValue: 0 })
-  exceed: number;
-
-  @Field(() => [CreateSpLoaner], { defaultValue: [] })
-  loaners: ISpLoaner[];
 }
 
 @InputType()
@@ -143,38 +199,17 @@ export class CreateEvent implements Partial<ISpEvent> {
   @Field(() => [CreateSpParticipant], { defaultValue: [] })
   participants: ISpParticipant[];
 
-  @Field({ nullable: true, defaultValue: 0 })
-  each: number;
-
-  @Field({ nullable: true, defaultValue: 0 })
-  peopleCount?: number;
-
-  @Field({ nullable: true, defaultValue: 0 })
-  price?: number;
-
   @Field({ nullable: true, defaultValue: false })
   isClosed?: boolean;
 }
 @InputType()
-export class UpdateEvent implements Partial<CreateEvent> {
-  @Field({ nullable: true })
-  name?: string;
+export class UpdateEvent implements Partial<SpEventHistoryItem> {
+  @Field(() => ID)
+  userId: ObjectId;
 
-  @Field(() => [CreateSpParticipant], { nullable: true })
-  participants?: ISpParticipant[];
+  @Field()
+  userName: string;
 
-  @Field({ nullable: true })
-  each?: number;
-
-  @Field({ nullable: true })
-  peopleCount?: number;
-
-  @Field({ nullable: true })
-  price?: number;
-
-  @Field({ nullable: true, defaultValue: false })
-  isClosed?: boolean;
-
-  @Field({ nullable: true })
-  closedAt?: Date;
+  @Field(() => CreateSpEventHistoryItemChange, { defaultValue: {} })
+  change: ISpEventHistoryItem["change"];
 }

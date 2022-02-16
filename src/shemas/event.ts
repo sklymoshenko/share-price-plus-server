@@ -4,7 +4,8 @@ import { Field, ObjectType, ID, Int } from "type-graphql";
 import { ISpParticipant } from "src/types/entities/user";
 
 // Abstract classes
-import { SpParticipant } from "../serverTypes/event";
+import { SpEventHistoryItem, SpParticipant } from "../serverTypes/event";
+import { ISpEventHistoryItem } from "src/types/entities/event";
 
 @ObjectType({ description: "Event Schema" })
 export default class Event {
@@ -25,6 +26,9 @@ export default class Event {
 
   @Field(() => [SpParticipant], { defaultValue: [] })
   participants: ISpParticipant[];
+
+  @Field(() => [SpEventHistoryItem], { defaultValue: [] })
+  history: ISpEventHistoryItem[];
 
   @Field({ defaultValue: false })
   isClosed: boolean;

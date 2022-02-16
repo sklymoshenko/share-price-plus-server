@@ -11,44 +11,64 @@ interface AbstractParticipant {
   paid: Int!
 }
 
-"""Schema for participant loaner"""
-interface AbstractSpLoaner {
+"""Schema for event history item"""
+interface AbstractSpEventHistoryItem {
   _id: ID!
+  change: SpEventHistoryItemChange!
+  createdAt: DateTime!
+  userId: ID!
+  userName: String!
+}
+
+"""Schema for event history item"""
+interface AbstractSpEventHistoryItemChange {
+  _id: ID!
+  closedAt: DateTime
+  createdAt: DateTime!
+  isClosed: Boolean
+  name: String
+  participants: [SpEventHistoryItemChangeParticipants!]
+}
+
+"""Schema for participants change """
+interface AbstractSpEventHistoryItemChangeParticipants {
+  _id: ID!
+  createdAt: DateTime!
   name: String!
-  paid: Int!
+  paid: Float!
 }
 
 """Schema for event participant """
 interface AbstractSpParticipant {
   _id: ID!
   exceed: Int!
-  loaners: [SpLoaner!]
   name: String!
   ows: Int!
   paid: Int!
 }
 
 input CreateEvent {
-  each: Float = 0
   isClosed: Boolean = false
   name: String
   participants: [CreateSpParticipant!] = []
-  peopleCount: Float = 0
-  price: Float = 0
 }
 
-input CreateSpLoaner {
+input CreateSpEventHistoryItemChange {
+  closedAt: DateTime
+  isClosed: Boolean = false
+  name: String
+  participants: [CreateSpEventHistoryItemChangeParticipants!]
+}
+
+input CreateSpEventHistoryItemChangeParticipants {
   _id: ID!
   name: String!
-  paid: Int = 0
+  paid: Float = 0
 }
 
 input CreateSpParticipant {
   _id: ID!
-  exceed: Int = 0
-  loaners: [CreateSpLoaner!] = []
   name: String!
-  ows: Int = 0
   paid: Int = 0
 }
 
@@ -65,6 +85,7 @@ type Event {
   closedAt: DateTime
   createdAt: DateTime!
   each: Int!
+  history: [SpEventHistoryItem!]
   isClosed: Boolean
   name: String!
   participants: [SpParticipant!]
@@ -138,16 +159,33 @@ type Query {
   spUsersJson: [User!]!
 }
 
-type SpLoaner implements AbstractSpLoaner {
+type SpEventHistoryItem implements AbstractSpEventHistoryItem {
   _id: ID!
+  change: SpEventHistoryItemChange!
+  createdAt: DateTime!
+  userId: ID!
+  userName: String!
+}
+
+type SpEventHistoryItemChange implements AbstractSpEventHistoryItemChange {
+  _id: ID!
+  closedAt: DateTime
+  createdAt: DateTime!
+  isClosed: Boolean
+  name: String
+  participants: [SpEventHistoryItemChangeParticipants!]
+}
+
+type SpEventHistoryItemChangeParticipants implements AbstractSpEventHistoryItemChangeParticipants {
+  _id: ID!
+  createdAt: DateTime!
   name: String!
-  paid: Int!
+  paid: Float!
 }
 
 type SpParticipant implements AbstractSpParticipant {
   _id: ID!
   exceed: Int!
-  loaners: [SpLoaner!]
   name: String!
   ows: Int!
   paid: Int!
@@ -158,13 +196,9 @@ type Subscription {
 }
 
 input UpdateEvent {
-  closedAt: DateTime
-  each: Float
-  isClosed: Boolean = false
-  name: String
-  participants: [CreateSpParticipant!]
-  peopleCount: Float
-  price: Float
+  change: CreateSpEventHistoryItemChange = {}
+  userId: ID!
+  userName: String!
 }
 
 """User Schema"""
