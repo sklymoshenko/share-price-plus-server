@@ -55,5 +55,6 @@ export interface ISpEventHistoryItem {
   _id: Mongoose.ObjectId;
   userId: Mongoose.ObjectId;
   userName: string;
+  createdAt: Date;
   change: ISpEventHistoryItemChange;
 }

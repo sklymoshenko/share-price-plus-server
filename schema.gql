@@ -15,6 +15,7 @@ interface AbstractParticipant {
 interface AbstractSpEventHistoryItem {
   _id: ID!
   change: SpEventHistoryItemChange!
+  createdAt: DateTime!
   userId: ID!
   userName: String!
 }
@@ -23,6 +24,7 @@ interface AbstractSpEventHistoryItem {
 interface AbstractSpEventHistoryItemChange {
   _id: ID!
   closedAt: DateTime
+  createdAt: DateTime!
   isClosed: Boolean
   name: String
   participants: [SpEventHistoryItemChangeParticipants!]
@@ -31,6 +33,7 @@ interface AbstractSpEventHistoryItemChange {
 """Schema for participants change """
 interface AbstractSpEventHistoryItemChangeParticipants {
   _id: ID!
+  createdAt: DateTime!
   name: String!
   paid: Float!
 }
@@ -159,6 +162,7 @@ type Query {
 type SpEventHistoryItem implements AbstractSpEventHistoryItem {
   _id: ID!
   change: SpEventHistoryItemChange!
+  createdAt: DateTime!
   userId: ID!
   userName: String!
 }
@@ -166,6 +170,7 @@ type SpEventHistoryItem implements AbstractSpEventHistoryItem {
 type SpEventHistoryItemChange implements AbstractSpEventHistoryItemChange {
   _id: ID!
   closedAt: DateTime
+  createdAt: DateTime!
   isClosed: Boolean
   name: String
   participants: [SpEventHistoryItemChangeParticipants!]
@@ -173,6 +178,7 @@ type SpEventHistoryItemChange implements AbstractSpEventHistoryItemChange {
 
 type SpEventHistoryItemChangeParticipants implements AbstractSpEventHistoryItemChangeParticipants {
   _id: ID!
+  createdAt: DateTime!
   name: String!
   paid: Float!
 }
