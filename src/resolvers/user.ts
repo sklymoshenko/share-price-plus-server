@@ -22,7 +22,7 @@ export class UserResolver {
   async currentUser(@Ctx() ctx: IContext): Promise<ISpUser | null> {
     try {
       if (!ctx.req.session!.userId) {
-        throw new Error("No loged user");
+        throw new Error("Auth error: No logged user!");
       }
 
       return await UserModel.findOne({ id: new Types.ObjectId(ctx.req.session!.userId) });
