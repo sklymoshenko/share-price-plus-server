@@ -69,7 +69,7 @@ async function startServer() {
 
     const cookie = {
       maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-      secure: IS_PROD,
+      secure: false,
       httpOnly: false,
       ...(IS_PROD ? { sameSite: "none" } : {})
     };
