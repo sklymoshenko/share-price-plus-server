@@ -62,7 +62,8 @@ async function startServer() {
           "http://192.168.0.103:3000",
           "https://studio.apollographql.com",
           "http://localhost:3000",
-          "https://sharepriceplus.netlify.app"
+          "https://sharepriceplus.netlify.app",
+          "https://share-price-plus.herokuapp.com"
         ]
       })
     );
