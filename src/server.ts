@@ -63,14 +63,15 @@ async function startServer() {
           "https://studio.apollographql.com",
           "http://localhost:3000",
           "https://sharepriceplus.netlify.app",
-          "https://share-price-plus.herokuapp.com"
+          "https://share-price-plus.herokuapp.com",
+          "http://client.shareprice.online/"
         ]
       })
     );
 
     const cookie = {
       maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-      secure: IS_PROD,
+      secure: false,
       httpOnly: false,
       ...(IS_PROD ? { sameSite: "none" } : {})
     };
