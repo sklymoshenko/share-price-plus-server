@@ -49,7 +49,6 @@ async function startServer() {
     const PORT = process.env.PORT;
     const HOST = process.env.HOST;
     const SESSION_SECRET = process.env.SESSION_SECRET || "localsecret";
-    const IS_PROD = process.env.NODE_ENV === "production";
 
     const mongoUrl = `mongodb+srv://${MONGO_USER}:${MONGO_PASS}@sharepriceplus.crwbo.mongodb.net/SharePricePlus?retryWrites=true&w=majority`;
     await Mongoose.connect(mongoUrl);
