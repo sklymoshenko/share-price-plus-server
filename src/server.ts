@@ -64,7 +64,7 @@ async function startServer() {
           "http://localhost:3000",
           "https://sharepriceplus.netlify.app",
           "https://share-price-plus.herokuapp.com",
-          "http://client.shareprice.online/"
+          "http://client.shareprice.online"
         ]
       })
     );
