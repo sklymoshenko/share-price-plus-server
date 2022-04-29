@@ -73,6 +73,7 @@ async function startServer() {
       maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
       secure: false,
       httpOnly: false,
+      domain: "shareprice.online",
       ...(IS_PROD ? { sameSite: "none" } : {})
     };
 
